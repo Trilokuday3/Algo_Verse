@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Z - Your Automated Trading Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="antialiased scroll-smooth">
+    <div id="app" class="overflow-x-hidden">
+        <header class="m3-top-app-bar sticky top-0 z-50">
+            <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+                <a href="#app" class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    </div>
+                    <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#features" class="m3-text-button m3-label-large px-4 py-2 rounded-full">What we Offer</a>
+                    <a href="#vision" class="m3-text-button m3-label-large px-4 py-2 rounded-full">Our Vision</a>
+                    <a href="#how-it-works" class="m3-text-button m3-label-large px-4 py-2 rounded-full">How it Works</a>
+                    <a href="#contact" class="m3-text-button m3-label-large px-4 py-2 rounded-full">Contact Us</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                     <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                         <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                         <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                     </button>
+                    <a href="login.html" class="m3-filled-button m3-label-large px-6 py-2 rounded-full">Login</a>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section class="container mx-auto px-6 py-20 md:py-32">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="text-center">
+                        <p class="text-2xl md:text-3xl tracking-wide" style="color: var(--on-surface-variant-color);">Your automated trading assistant</p>
+                        <h1 class="font-marker text-6xl md:text-8xl my-4" style="color: var(--primary-color);">Welcomes You</h1>
+                        <a href="login.html" class="inline-block border-2 rounded-xl py-3 px-8 mt-10 m3-label-large font-bold transition-all duration-300 hover:bg-gray-500/10" style="border-color: var(--outline-color);">
+                            Get Started
+                        </a>
+                    </div>
+                    <div class="hidden lg:block">
+                        <div class="m3-card p-8 flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 24 24" fill="none" style="color: var(--on-primary-container-color);"><path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15v-4.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 15v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m18.5 7.5 2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 7.5h-2.5V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            </main>
+        
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <script src="./js/main.js"></script>
+
+    <script>
+      // Swiper initialization
+      var swiper = new Swiper('.swiper-container', {
+          // ... your swiper config
+      });
+    </script>
+</body>
+</html>

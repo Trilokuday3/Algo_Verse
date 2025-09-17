@@ -1,0 +1,181 @@
+/* Material You Inspired Dynamic Color Theming */
+:root {
+    --md-sys-color-primary: #6750A4;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #EADDFF;
+    --md-sys-color-on-primary-container: #21005D;
+    --md-sys-color-secondary: #625B71;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-secondary-container: #E8DEF8;
+    --md-sys-color-on-secondary-container: #1D192B;
+    --md-sys-color-tertiary: #7D5260;
+    --md-sys-color-on-tertiary: #FFFFFF;
+    --md-sys-color-tertiary-container: #FFD8E4;
+    --md-sys-color-on-tertiary-container: #31111D;
+    --md-sys-color-error: #B3261E;
+    --md-sys-color-on-error: #FFFFFF;
+    --md-sys-color-error-container: #F9DEDC;
+    --md-sys-color-on-error-container: #410E0B;
+    --md-sys-color-background: #FFFBFE;
+    --md-sys-color-on-background: #1C1B1F;
+    --md-sys-color-surface: #FFFBFE;
+    --md-sys-color-on-surface: #1C1B1F;
+    --md-sys-color-surface-variant: #E7E0EC;
+    --md-sys-color-on-surface-variant: #49454F;
+    --md-sys-color-outline: #79747E;
+    --md-sys-color-shadow: #000000;
+    --md-sys-color-inverse-surface: #313033;
+    --md-sys-color-inverse-on-surface: #F4EFF4;
+    --md-sys-color-inverse-primary: #D0BCFF;
+    --md-sys-color-surface-tint-layer: #6750A4;
+
+    /* Custom Properties for easier use */
+    --bg-color: var(--md-sys-color-background);
+    --text-color: var(--md-sys-color-on-background);
+    --surface-color: var(--md-sys-color-surface);
+    --surface-variant-color: var(--md-sys-color-surface-variant);
+    --on-surface-variant-color: var(--md-sys-color-on-surface-variant);
+    --primary-color: var(--md-sys-color-primary);
+    --on-primary-color: var(--md-sys-color-on-primary);
+    --primary-container-color: var(--md-sys-color-primary-container);
+    --on-primary-container-color: var(--md-sys-color-on-primary-container);
+    --secondary-container-color: var(--md-sys-color-secondary-container);
+    --on-secondary-container-color: var(--md-sys-color-on-secondary-container);
+    --outline-color: var(--md-sys-color-outline);
+}
+
+.font-marker {
+    font-family: 'Permanent Marker', cursive;
+}
+
+html.dark {
+    --md-sys-color-primary: #D0BCFF;
+    --md-sys-color-on-primary: #381E72;
+    --md-sys-color-primary-container: #4F378B;
+    --md-sys-color-on-primary-container: #EADDFF;
+    --md-sys-color-secondary: #CCC2DC;
+    --md-sys-color-on-secondary: #332D41;
+    --md-sys-color-secondary-container: #4A4458;
+    --md-sys-color-on-secondary-container: #E8DEF8;
+    --md-sys-color-tertiary: #EFB8C8;
+    --md-sys-color-on-tertiary: #492532;
+    --md-sys-color-tertiary-container: #633B48;
+    --md-sys-color-on-tertiary-container: #FFD8E4;
+    --md-sys-color-error: #F2B8B5;
+    --md-sys-color-on-error: #601410;
+    --md-sys-color-error-container: #8C1D18;
+    --md-sys-color-on-error-container: #F9DEDC;
+    --md-sys-color-background: #1C1B1F;
+    --md-sys-color-on-background: #E6E1E5;
+    --md-sys-color-surface: #1C1B1F;
+    --md-sys-color-on-surface: #E6E1E5;
+    --md-sys-color-surface-variant: #49454F;
+    --md-sys-color-on-surface-variant: #CAC4D0;
+    --md-sys-color-outline: #938F99;
+    --md-sys-color-shadow: #000000;
+    --md-sys-color-inverse-surface: #E6E1E5;
+    --md-sys-color-inverse-on-surface: #313033;
+    --md-sys-color-inverse-primary: #6750A4;
+    --md-sys-color-surface-tint-layer: #D0BCFF;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Material You Component Styles */
+.m3-top-app-bar {
+    background-color: color-mix(in srgb, var(--surface-color) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid color-mix(in srgb, var(--outline-color), transparent 70%);
+}
+
+.m3-filled-button {
+    background-color: var(--primary-color);
+    color: var(--on-primary-color);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.m3-filled-button:hover {
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+}
+
+.m3-tonal-button {
+    background-color: var(--secondary-container-color);
+    color: var(--on-secondary-container-color);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.m3-tonal-button:hover {
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+}
+
+.m3-text-button {
+    color: var(--primary-color);
+}
+.m3-text-button:hover {
+    background-color: color-mix(in srgb, var(--primary-color), transparent 88%);
+}
+
+.m3-card {
+    background-color: color-mix(in srgb, var(--surface-color), var(--md-sys-color-surface-tint-layer) 5%);
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 1px 3px 1px rgba(0,0,0,0.08);
+    border-radius: 1.5rem; /* rounded-2xl */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.m3-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1), 0 6px 20px 0 rgba(0,0,0,0.08);
+}
+
+.m3-surface-tonal {
+    background-color: color-mix(in srgb, var(--surface-color), var(--md-sys-color-surface-tint-layer) 12%);
+}
+
+/* Typography Styles */
+.m3-display-large { font-size: 3.5625rem; line-height: 4rem; font-weight: 400; }
+.m3-headline-large { font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
+.m3-headline-medium { font-size: 1.75rem; line-height: 2.25rem; font-weight: 400; }
+.m3-title-large { font-size: 1.375rem; line-height: 1.75rem; font-weight: 500; }
+.m3-body-large { font-size: 1rem; line-height: 1.5rem; font-weight: 400; }
+.m3-label-large { font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--surface-variant-color); }
+::-webkit-scrollbar-thumb { background: var(--outline-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+/* Swiper Custom Styles */
+.swiper-container {
+    overflow: hidden;
+    position: relative;
+    padding: 0 10px;
+}
+.swiper-slide { height: auto; }
+.swiper-button-next, .swiper-button-prev {
+    color: var(--primary-color) !important;
+    background-color: color-mix(in srgb, var(--surface-variant-color), #000000 10%);
+    border-radius: 50%;
+    width: 44px !important;
+    height: 44px !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+.swiper-button-next:hover, .swiper-button-prev:hover {
+    background-color: color-mix(in srgb, var(--surface-variant-color), #000000 20%);
+}
+.swiper-button-next:after, .swiper-button-prev:after {
+    font-size: 20px !important;
+    font-weight: bold;
+}
+.swiper-pagination-bullet {
+    background-color: var(--outline-color) !important;
+    opacity: 0.7;
+}
+.swiper-pagination-bullet-active {
+    background-color: var(--primary-color) !important;
+    opacity: 1;
+}

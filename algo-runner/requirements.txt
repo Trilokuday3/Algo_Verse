@@ -1,0 +1,9 @@
+dhanhq
+pandas
+xlwings
+requests
+pdbpp
+pprintpp
+mibian
+TA-Lib
+scipy
