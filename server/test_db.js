@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // --- IMPORTANT ---
 // PASTE YOUR MONGODB ATLAS CONNECTION STRING HERE
-const MONGO_URI = "mongodb+srv://Cap_Manager:algoverse@3lok.5802e.mongodb.net/Capstone_Project?retryWrites=true&w=majority&appName=3Lok";
+const MONGO_URI = 
 
 // A simple schema for our test
 const testSchema = new mongoose.Schema({
