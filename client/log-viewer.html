@@ -1,0 +1,17 @@
+<!-- This is the hidden modal for viewing logs -->
+<div id="log-viewer-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="m3-card w-full max-w-3xl h-3/4 flex flex-col m-4">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center p-4 border-b" style="border-color: var(--outline-color);">
+            <h2 id="log-viewer-title" class="m3-title-large">Strategy Logs</h2>
+            <button id="close-log-viewer" class="m3-text-button p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <!-- Log Content Area -->
+        <div id="log-viewer-content" class="flex-1 p-4 font-mono text-sm overflow-y-auto" style="background-color: var(--surface-variant-color); color: var(--on-surface-variant-color);">
+            <!-- Live logs will be inserted here by JavaScript -->
+        </div>
+    </div>
+</div>
+

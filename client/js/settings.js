@@ -5,11 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const clientId = document.getElementById('client-id').value;
-            const accessToken = document.getElementById('token-id').value;
+            // Create an object with all the credential values from the form
+            const credentials = {
+                clientId: document.getElementById('client-id').value,
+                accessToken: document.getElementById('token-id').value,
+                brokerUsername: document.getElementById('broker-username').value,
+                brokerPassword: document.getElementById('broker-password').value,
+                totpSecret: document.getElementById('totp-secret').value
+            };
 
-            const result = await saveCredentials(clientId, accessToken);
-
+            const result = await saveCredentials(credentials);
             alert(result.message);
         });
     }

@@ -90,7 +90,7 @@ body {
 .m3-top-app-bar {
     background-color: color-mix(in srgb, var(--surface-color) 80%, transparent);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* For Safari */
     border-bottom: 1px solid color-mix(in srgb, var(--outline-color), transparent 70%);
 }
 
@@ -142,20 +142,32 @@ body {
 .m3-body-large { font-size: 1rem; line-height: 1.5rem; font-weight: 400; }
 .m3-label-large { font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--surface-variant-color); }
-::-webkit-scrollbar-thumb { background: var(--outline-color); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+/* Custom Scrollbar for a more integrated feel */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--surface-variant-color);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--outline-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
 
 /* Swiper Custom Styles */
 .swiper-container {
     overflow: hidden;
     position: relative;
-    padding: 0 10px;
+    padding: 0 10px; /* Add some padding so buttons don't touch edges */
 }
-.swiper-slide { height: auto; }
-.swiper-button-next, .swiper-button-prev {
+.swiper-slide {
+    height: auto;
+}
+.swiper-button-next,
+.swiper-button-prev {
     color: var(--primary-color) !important;
     background-color: color-mix(in srgb, var(--surface-variant-color), #000000 10%);
     border-radius: 50%;
@@ -164,10 +176,12 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: background-color 0.3s ease;
 }
-.swiper-button-next:hover, .swiper-button-prev:hover {
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
     background-color: color-mix(in srgb, var(--surface-variant-color), #000000 20%);
 }
-.swiper-button-next:after, .swiper-button-prev:after {
+.swiper-button-next:after,
+.swiper-button-prev:after {
     font-size: 20px !important;
     font-weight: bold;
 }
@@ -179,3 +193,4 @@ body {
     background-color: var(--primary-color) !important;
     opacity: 1;
 }
+```

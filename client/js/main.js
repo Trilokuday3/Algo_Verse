@@ -1,4 +1,4 @@
-// This function will run when the entire HTML document has been loaded.
+// This function runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Theme Toggle Logic ---
@@ -7,7 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeIconDark = document.getElementById('theme-icon-dark');
     const htmlElement = document.documentElement;
 
-    // Function to apply the correct theme and icon state
+    /**
+     * Applies the selected theme (dark or light) to the page
+     * and updates the toggle button's icon.
+     * @param {string} theme - The theme to apply ('dark' or 'light').
+     */
     const applyTheme = (theme) => {
         if (theme === 'dark') {
             htmlElement.classList.add('dark');
@@ -24,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Check for a saved theme in localStorage on page load
+    // Check for a saved theme in localStorage or use the system preference.
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -36,11 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
         applyTheme('light');
     }
 
-    // Add click event listener to the toggle button if it exists
+    // Add a click listener to the theme toggle button if it exists on the page.
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             const isDark = htmlElement.classList.toggle('dark');
             const newTheme = isDark ? 'dark' : 'light';
+            
+            // Save the user's preference for future visits.
             localStorage.setItem('theme', newTheme);
             applyTheme(newTheme);
         });

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Z - Your Automated Trading Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        /* Material You Inspired Dynamic Color Theming */
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-on-secondary-container: #1D192B;
+            --md-sys-color-tertiary: #7D5260;
+            --md-sys-color-on-tertiary: #FFFFFF;
+            --md-sys-color-tertiary-container: #FFD8E4;
+            --md-sys-color-on-tertiary-container: #31111D;
+            --md-sys-color-error: #B3261E;
+            --md-sys-color-on-error: #FFFFFF;
+            --md-sys-color-error-container: #F9DEDC;
+            --md-sys-color-on-error-container: #410E0B;
+            --md-sys-color-background: #FFFBFE;
+            --md-sys-color-on-background: #1C1B1F;
+            --md-sys-color-surface: #FFFBFE;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-shadow: #000000;
+            --md-sys-color-inverse-surface: #313033;
+            --md-sys-color-inverse-on-surface: #F4EFF4;
+            --md-sys-color-inverse-primary: #D0BCFF;
+            --md-sys-color-surface-tint-layer: #6750A4;
+
+            /* Custom Properties for easier use */
+            --bg-color: var(--md-sys-color-background);
+            --text-color: var(--md-sys-color-on-background);
+            --surface-color: var(--md-sys-color-surface);
+            --surface-variant-color: var(--md-sys-color-surface-variant);
+            --on-surface-variant-color: var(--md-sys-color-on-surface-variant);
+            --primary-color: var(--md-sys-color-primary);
+            --on-primary-color: var(--md-sys-color-on-primary);
+            --primary-container-color: var(--md-sys-color-primary-container);
+            --on-primary-container-color: var(--md-sys-color-on-primary-container);
+            --secondary-container-color: var(--md-sys-color-secondary-container);
+            --on-secondary-container-color: var(--md-sys-color-on-secondary-container);
+            --outline-color: var(--md-sys-color-outline);
+        }
+
+        .font-marker {
+            font-family: 'Permanent Marker', cursive;
+        }
+
+        html.dark {
+            --md-sys-color-primary: #D0BCFF;
+            --md-sys-color-on-primary: #381E72;
+            --md-sys-color-primary-container: #4F378B;
+            --md-sys-color-on-primary-container: #EADDFF;
+            --md-sys-color-secondary: #CCC2DC;
+            --md-sys-color-on-secondary: #332D41;
+            --md-sys-color-secondary-container: #4A4458;
+            --md-sys-color-on-secondary-container: #E8DEF8;
+            --md-sys-color-tertiary: #EFB8C8;
+            --md-sys-color-on-tertiary: #492532;
+            --md-sys-color-tertiary-container: #633B48;
+            --md-sys-color-on-tertiary-container: #FFD8E4;
+            --md-sys-color-error: #F2B8B5;
+            --md-sys-color-on-error: #601410;
+            --md-sys-color-error-container: #8C1D18;
+            --md-sys-color-on-error-container: #F9DEDC;
+            --md-sys-color-background: #1C1B1F;
+            --md-sys-color-on-background: #E6E1E5;
+            --md-sys-color-surface: #1C1B1F;
+            --md-sys-color-on-surface: #E6E1E5;
+            --md-sys-color-surface-variant: #49454F;
+            --md-sys-color-on-surface-variant: #CAC4D0;
+            --md-sys-color-outline: #938F99;
+            --md-sys-color-shadow: #000000;
+            --md-sys-color-inverse-surface: #E6E1E5;
+            --md-sys-color-inverse-on-surface: #313033;
+            --md-sys-color-inverse-primary: #6750A4;
+            --md-sys-color-surface-tint-layer: #D0BCFF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Material You Component Styles */
+        .m3-top-app-bar {
+            background-color: color-mix(in srgb, var(--surface-color) 80%, transparent);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* For Safari */
+            border-bottom: 1px solid color-mix(in srgb, var(--outline-color), transparent 70%);
+        }
+
+        .m3-filled-button {
+            background-color: var(--primary-color);
+            color: var(--on-primary-color);
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .m3-filled-button:hover {
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+        }
+
+        .m3-tonal-button {
+            background-color: var(--secondary-container-color);
+            color: var(--on-secondary-container-color);
+             transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .m3-tonal-button:hover {
+             box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+        }
+
+        .m3-text-button {
+            color: var(--primary-color);
+        }
+        .m3-text-button:hover {
+             background-color: color-mix(in srgb, var(--primary-color), transparent 88%);
+        }
+
+        .m3-card {
+            background-color: color-mix(in srgb, var(--surface-color), var(--md-sys-color-surface-tint-layer) 5%);
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 1px 3px 1px rgba(0,0,0,0.08);
+            border-radius: 1.5rem; /* rounded-2xl */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .m3-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1), 0 6px 20px 0 rgba(0,0,0,0.08);
+        }
+        
+        .m3-surface-tonal {
+            background-color: color-mix(in srgb, var(--surface-color), var(--md-sys-color-surface-tint-layer) 12%);
+        }
+
+        /* Typography Styles */
+        .m3-display-large { font-size: 3.5625rem; line-height: 4rem; font-weight: 400; }
+        .m3-headline-large { font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
+        .m3-headline-medium { font-size: 1.75rem; line-height: 2.25rem; font-weight: 400; }
+        .m3-title-large { font-size: 1.375rem; line-height: 1.75rem; font-weight: 500; }
+        .m3-body-large { font-size: 1rem; line-height: 1.5rem; font-weight: 400; }
+        .m3-label-large { font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; }
+
+        /* Custom Scrollbar for a more integrated feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--surface-variant-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--outline-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Swiper Custom Styles */
+        .swiper-container {
+            overflow: hidden;
+            position: relative;
+            padding: 0 10px; /* Add some padding so buttons don't touch edges */
+        }
+        .swiper-slide {
+            height: auto;
+        }
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--primary-color) !important;
+            background-color: color-mix(in srgb, var(--surface-variant-color), #000000 10%);
+            border-radius: 50%;
+            width: 44px !important;
+            height: 44px !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background-color: color-mix(in srgb, var(--surface-variant-color), #000000 20%);
+        }
+        .swiper-button-next:after,
+        .swiper-button-prev:after {
+            font-size: 20px !important;
+            font-weight: bold;
+        }
+        .swiper-pagination-bullet {
+            background-color: var(--outline-color) !important;
+            opacity: 0.7;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: var(--primary-color) !important;
+            opacity: 1;
+        }
+
+
+    </style>
+</head>
+<body class="antialiased scroll-smooth overflow-x-hidden">
+    <div id="app">
+        <!-- Header (Top App Bar) -->
+        <header class="m3-top-app-bar sticky top-0 z-50">
+            <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+                <!-- Left: Logo -->
+                <a href="#app" class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                         <span class="text-2xl font-bold" style="color: var(--on-primary-container-color);">α</span>
+                    </div>
+                    <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+                </a>
+
+                <!-- Center: Navigation Links -->
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#features" class="m3-text-button m3-label-large px-4 py-2 rounded-full">What we Offer</a>
+                    <a href="#vision" class="m3-text-button m3-label-large px-4 py-2 rounded-full">Our Vision</a>
+                    <a href="#how-it-works" class="m3-text-button m3-label-large px-4 py-2 rounded-full">How it Works</a>
+                    <a href="#contact" class="m3-text-button m3-label-large px-4 py-2 rounded-full">Contact Us</a>
+                </div>
+
+                <!-- Right: Theme Toggle & Avatar -->
+                <div class="flex items-center space-x-4">
+                     <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                         <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                         <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                     </button>
+                     <img src="https://placehold.co/40x40/EADDFF/21005D?text=A" alt="Account Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Hero Section -->
+            <section class="container mx-auto px-6 py-20 md:py-32">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="text-center">
+                        <p class="text-2xl md:text-3xl tracking-wide" style="color: var(--on-surface-variant-color);">Your automated trading assistant</p>
+                        <h1 class="font-marker text-6xl md:text-8xl my-4" style="color: var(--primary-color);">Welcomes You</h1>
+                        <button class="border-2 rounded-xl py-3 px-8 mt-10 m3-label-large font-bold transition-all duration-300 hover:bg-gray-500/10" style="border-color: var(--outline-color);">
+                            Get Started
+                        </button>
+                    </div>
+                    <div class="hidden lg:block">
+                        <!-- Illustration Placeholder -->
+                        <div class="m3-card p-8 flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 24 24" fill="none" style="color: var(--on-primary-container-color);">
+                            <path d="M3 3v18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 15v-4.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13 15v-2.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="m18.5 7.5 2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 7.5h-2.5V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                           </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features" class="container mx-auto px-6 py-24">
+                <div class="text-center mb-16">
+                    <h2 class="m3-headline-large font-semibold">What We Offer</h2>
+                    <p class="m3-body-large mt-4 max-w-2xl mx-auto" style="color: var(--on-surface-variant-color);">A comprehensive suite of tools designed for both novice and expert traders.</p>
+                </div>
+                <!-- Swiper -->
+                <div class="swiper-container">
+                    <div class="swiper-wrapper py-4">
+                        <!-- Feature Slide 1 -->
+                        <div class="swiper-slide">
+                           <div class="m3-card p-8 text-center h-full flex flex-col justify-center items-center">
+                                <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style="background-color: var(--secondary-container-color);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                                </div>
+                                <h3 class="m3-title-large">24/7 Uptime</h3>
+                                <p class="m3-body-large mt-2 flex-grow" style="color: var(--on-surface-variant-color);">Our cloud infrastructure ensures your strategies are always running.</p>
+                            </div>
+                        </div>
+                        <!-- Feature Slide 2 -->
+                        <div class="swiper-slide">
+                            <div class="m3-card p-8 text-center h-full flex flex-col justify-center items-center">
+                                <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style="background-color: var(--secondary-container-color);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                                </div>
+                                <h3 class="m3-title-large">Unlimited Customization</h3>
+                                <p class="m3-body-large mt-2 flex-grow" style="color: var(--on-surface-variant-color);">Build complex strategies with our intuitive, powerful editor.</p>
+                            </div>
+                        </div>
+                        <!-- Feature Slide 3 -->
+                        <div class="swiper-slide">
+                            <div class="m3-card p-8 text-center h-full flex flex-col justify-center items-center">
+                                <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style="background-color: var(--secondary-container-color);">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);"><polyline points="22 12 16 12 14 15 10 9 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+                                </div>
+                                <h3 class="m3-title-large">Unlimited Strategies</h3>
+                                <p class="m3-body-large mt-2 flex-grow" style="color: var(--on-surface-variant-color);">Run as many trading bots as you need, simultaneously.</p>
+                            </div>
+                        </div>
+                        <!-- Feature Slide 4 -->
+                        <div class="swiper-slide">
+                            <div class="m3-card p-8 text-center h-full flex flex-col justify-center items-center">
+                                <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style="background-color: var(--secondary-container-color);">
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path><path d="M2 8c0-2.2.7-4.3 2-6"></path><path d="M22 8a10 10 0 0 0-2-6"></path></svg>
+                                </div>
+                                <h3 class="m3-title-large">Open Source Marketplace</h3>
+                                <p class="m3-body-large mt-2 flex-grow" style="color: var(--on-surface-variant-color);">Share, discover, and build upon strategies from the community.</p>
+                            </div>
+                        </div>
+                        <!-- Feature Slide 5 -->
+                         <div class="swiper-slide">
+                            <div class="m3-card p-8 text-center h-full flex flex-col justify-center items-center">
+                                <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style="background-color: var(--secondary-container-color);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>
+                                </div>
+                                <h3 class="m3-title-large">Portfolio Management</h3>
+                                <p class="m3-body-large mt-2 flex-grow" style="color: var(--on-surface-variant-color);">Track your performance across all connected brokers.</p>
+                            </div>
+                        </div>
+                        <!-- Feature Slide 6 -->
+                        <div class="swiper-slide">
+                            <div class="m3-card p-8 text-center h-full flex flex-col justify-center items-center">
+                                <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style="background-color: var(--secondary-container-color);">
+                                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                                </div>
+                                <h3 class="m3-title-large">Backtesting & Paper Trading</h3>
+                                <p class="m3-body-large mt-2 flex-grow" style="color: var(--on-surface-variant-color);">Test strategies on historical data before risking capital.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination mt-12 relative"></div>
+                    <!-- Add Navigation -->
+                    <div class="swiper-button-next -mr-3"></div>
+                    <div class="swiper-button-prev -ml-3"></div>
+                </div>
+            </section>
+            
+            <!-- Vision Section -->
+            <section id="vision">
+                 <div class="container mx-auto px-6">
+                     <div class="text-center">
+                         <h2 class="m3-headline-large font-semibold">Our Vision</h2>
+                         <p class="m3-body-large text-lg mt-6 max-w-3xl mx-auto" style="color: var(--on-surface-variant-color);">Our vision is to simplify your trading experience. We handle complexities like installing dependencies on our cloud servers, so you can focus on what matters. Our platform is designed to empower you to run sophisticated strategies with minimal coding knowledge, while our intuitive dashboards provide crucial insights into your financial performance.</p>
+                     </div>
+                 </div>
+            </section>
+
+            <!-- How It Works Section -->
+            <section id="how-it-works" class="container mx-auto px-6 py-24">
+                <div class="text-center mb-16">
+                    <h2 class="m3-headline-large font-semibold">How It Works</h2>
+                    <p class="m3-body-large mt-4 max-w-2xl mx-auto" style="color: var(--on-surface-variant-color);">Get started in four simple steps.</p>
+                </div>
+
+                <div class="relative">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                         <!-- Step 1 -->
+                        <div class="m3-card p-8 text-center h-full">
+                             <div class="relative w-20 h-20 mx-auto border-2 rounded-full flex items-center justify-center" style="border-color: var(--outline-color); background-color: var(--bg-color);">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </div>
+                            <h3 class="m3-title-large mt-6">Integrate Accounts</h3>
+                            <p class="m3-body-large mt-2" style="color: var(--on-surface-variant-color);">Securely connect your preferred broker accounts via API.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="m3-card p-8 text-center h-full">
+                            <div class="relative w-20 h-20 mx-auto border-2 rounded-full flex items-center justify-center" style="border-color: var(--outline-color); background-color: var(--bg-color);">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                            </div>
+                            <h3 class="m3-title-large mt-6">Create Strategy</h3>
+                            <p class="m3-body-large mt-2" style="color: var(--on-surface-variant-color);">Use our visual editor or code your own custom logic.</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="m3-card p-8 text-center h-full">
+                            <div class="relative w-20 h-20 mx-auto border-2 rounded-full flex items-center justify-center" style="border-color: var(--outline-color); background-color: var(--bg-color);">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </div>
+                            <h3 class="m3-title-large mt-6">Fine-tune & Backtest</h3>
+                            <p class="m3-body-large mt-2" style="color: var(--on-surface-variant-color);">Simulate performance on historical data to refine parameters.</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="m3-card p-8 text-center h-full">
+                             <div class="relative w-20 h-20 mx-auto border-2 rounded-full flex items-center justify-center" style="border-color: var(--outline-color); background-color: var(--bg-color);">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </div>
+                            <h3 class="m3-title-large mt-6">Place Live Orders</h3>
+                            <p class="m3-body-large mt-2" style="color: var(--on-surface-variant-color);">Deploy your strategy to trade automatically in the live market.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Call to Action (CTA) -->
+            <section class="container mx-auto px-6 py-12 md:py-16">
+                <div class="flex flex-col items-center text-center">
+                    <h2 class="m3-headline-large font-semibold mb-8">Start your Journey</h2>
+                    <button class="border-2 rounded-xl py-3 px-8 m3-label-large font-bold transition-all duration-300 hover:bg-gray-500/10" style="border-color: var(--outline-color);">
+                        Get Started
+                    </button>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer id="contact" class="mt-8" style="background-color: color-mix(in srgb, var(--surface-color), var(--md-sys-color-surface-tint-layer) 5%);">
+            <div class="container mx-auto px-6 py-8">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div>
+                        <a href="#app" class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                                 <span class="text-2xl font-bold" style="color: var(--on-primary-container-color);">α</span>
+                            </div>
+                            <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+                        </a>
+                        <p class="m3-body-large mt-4" style="color: var(--on-surface-variant-color);">Automated Trading, Simplified.</p>
+                    </div>
+                    <div>
+                        <h4 class="m3-title-large" style="color: var(--on-surface-variant-color);">Quick Links</h4>
+                        <ul class="mt-4 space-y-2">
+                             <li><a href="#features" class="m3-text-button m3-label-large p-1 rounded-md">Features</a></li>
+                             <li><a href="#vision" class="m3-text-button m3-label-large p-1 rounded-md">Vision</a></li>
+                             <li><a href="#how-it-works" class="m3-text-button m3-label-large p-1 rounded-md">How it Works</a></li>
+                             <li><a href="#" class="m3-text-button m3-label-large p-1 rounded-md">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h4 class="m3-title-large" style="color: var(--on-surface-variant-color);">Contact Us</h4>
+                        <ul class="mt-4 space-y-2">
+                             <li style="color: var(--on-surface-variant-color);">contact@alphaz.trade</li>
+                             <li style="color: var(--on-surface-variant-color);">123 Trading Lane, New York, NY</li>
+                        </ul>
+                         <div class="flex space-x-4 mt-4">
+                            <a href="#" class="p-2 rounded-full" style="background-color: var(--surface-color);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                            <a href="#" class="p-2 rounded-full" style="background-color: var(--surface-color);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                             <a href="#" class="p-2 rounded-full" style="background-color: var(--surface-color);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t" style="border-color: var(--outline-color);">
+                    <p class="text-center m3-body-large" style="color: var(--on-surface-variant-color);">&copy; 2025 Alpha Z. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Dark Mode Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+        const htmlElement = document.documentElement;
+
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            themeIconLight.classList.add('hidden');
+            themeIconDark.classList.remove('hidden');
+        } else {
+            htmlElement.classList.remove('dark');
+            themeIconLight.classList.remove('hidden');
+            themeIconDark.classList.add('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            // toggle theme
+            htmlElement.classList.toggle('dark');
+
+            // update icon
+            themeIconLight.classList.toggle('hidden');
+            themeIconDark.classList.toggle('hidden');
+
+            // save preference to localStorage
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Swiper initialization
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 30,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 40,
+                },
+            },
+        });
+    </script>
+</body>
+</html>
+

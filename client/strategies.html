@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Alpha Z</title>
+    <title>My Strategies - Alpha Z</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
+    <!-- WebSocket client library for live logs -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 </head>
 <body class="antialiased">
     <div class="flex h-screen" style="background-color: var(--surface-color);">
@@ -26,7 +28,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                         <span>Dashboard</span>
                     </a>
-                     <a href="strategies.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
+                    <a href="strategies.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large" style="background-color: var(--secondary-container-color); color: var(--on-secondary-container-color);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
                         <span>My Strategies</span>
                     </a>
@@ -34,7 +36,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
                         <span>Terminal</span>
                     </a>
-                    <a href="settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large" style="background-color: var(--secondary-container-color); color: var(--on-secondary-container-color);">
+                    <a href="settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         <span>Settings</span>
                     </a>
@@ -50,37 +52,25 @@
 
         <!-- Main Content -->
         <main class="flex-1 p-8 overflow-y-auto">
-            <!-- Header section with Title and Toggle Button -->
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="m3-headline-medium">Settings</h1>
+             <div class="flex justify-between items-center mb-8">
+                <h1 class="m3-headline-medium">My Strategies</h1>
                 <div class="flex items-center space-x-4">
-                     <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
-                         <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-700"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                         <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                     </button>
+                    <a href="terminal.html" class="m3-filled-button m3-label-large px-5 py-2 rounded-full flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Create New Strategy</span>
+                    </a>
+                    <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                        <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
                     <img src="https://placehold.co/40x40/EADDFF/21005D?text=A" alt="Account Avatar" class="w-10 h-10 rounded-full cursor-pointer">
                 </div>
             </div>
             
-            <div class="max-w-2xl">
-                <div class="m3-card p-8">
-                    <form id="settingsForm">
-                        <h3 class="m3-title-large mb-4">API Credentials</h3>
-                        <p class="m3-body-large mb-6" style="color: var(--on-surface-variant-color);">These are used to run your strategies.</p>
-                        
-                        <div class="mb-6">
-                            <label for="client-id" class="block m3-label-large mb-2">Dhan Client ID</label>
-                            <input type="text" id="client-id" class="w-full px-4 py-3 rounded-lg font-mono" style="background-color: var(--surface-variant-color);">
-                        </div>
-                        <div class="mb-8">
-                            <label for="token-id" class="block m3-label-large mb-2">Dhan Access Token</label>
-                            <input type="password" id="token-id" class="w-full px-4 py-3 rounded-lg font-mono" style="background-color: var(--surface-variant-color);">
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button type="submit" class="m3-filled-button m3-label-large px-6 py-2 rounded-full">Save Credentials</button>
-                        </div>
-                    </form>
+            <!-- This container will hold the strategy cards -->
+            <div id="strategies-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="m3-card p-6 text-center col-span-full" style="color: var(--on-surface-variant-color);">
+                    Loading your strategies...
                 </div>
             </div>
         </main>
@@ -88,7 +78,7 @@
     
     <script src="./js/main.js"></script>
     <script src="./js/api.js"></script>
-    <script src="./js/settings.js"></script>
+    <script src="./js/strategies.js"></script>
 </body>
 </html>
 
