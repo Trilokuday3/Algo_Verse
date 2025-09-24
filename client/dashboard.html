@@ -12,6 +12,7 @@
 </head>
 <body class="antialiased">
     <div class="flex h-screen" style="background-color: var(--surface-color);">
+        <!-- Sidebar -->
         <aside class="w-64 flex-shrink-0 p-4 flex flex-col" style="background-color: var(--m3-surface-tonal);">
             <div>
                 <a href="dashboard.html" class="flex items-center space-x-3 mb-10 px-2">
@@ -25,12 +26,16 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
                         <span>Dashboard</span>
                     </a>
+                    <a href="strategies.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                        <span>My Strategies</span>
+                    </a>
                     <a href="terminal.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
                         <span>Terminal</span>
                     </a>
                     <a href="settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                         <span>Settings</span>
                     </a>
                 </nav>
@@ -43,36 +48,45 @@
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="flex-1 p-8 overflow-y-auto">
             <div class="flex justify-between items-center mb-8">
                 <h1 class="m3-headline-medium">Dashboard</h1>
-                <img src="https://placehold.co/40x40/EADDFF/21005D?text=A" alt="Account Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                <div class="flex items-center space-x-4">
+                     <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                         <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                         <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                     </button>
+                    <img src="https://placehold.co/40x40/EADDFF/21005D?text=A" alt="Account Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                </div>
             </div>
 
+            <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="m3-card p-6">
                     <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Net Worth</h3>
-                    <p id="net-worth" class="m3-headline-medium mt-2">$0.00</p>
+                    <p id="net-worth" class="m3-headline-medium mt-2">N/A</p>
                 </div>
                 <div class="m3-card p-6">
                     <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Today's P&L</h3>
-                    <p id="pnl" class="m3-headline-medium mt-2 text-green-500">+$0.00</p>
+                    <p id="pnl" class="m3-headline-medium mt-2">N/A</p>
                 </div>
                  <div class="m3-card p-6">
                     <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Saved Strategies</h3>
-                    <p id="active-strategies" class="m3-headline-medium mt-2">0</p>
+                    <p id="saved-strategies" class="m3-headline-medium mt-2">0</p>
                 </div>
                  <div class="m3-card p-6">
                     <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Broker Status</h3>
                     <p class="m3-headline-medium mt-2 flex items-center">
-                        <span id="broker-status-icon" class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                        <span id="broker-status-icon" class="w-3 h-3 rounded-full bg-gray-500 mr-2"></span>
                         <span id="broker-status-text">Connecting...</span>
                     </p>
                 </div>
             </div>
 
+            <!-- Positions Table -->
             <div class="m3-card p-6">
-                 <h3 class="m3-title-large mb-4">Positions</h3>
+                 <h3 class="m3-title-large mb-4">Live Positions</h3>
                  <table class="w-full text-left">
                     <thead>
                         <tr>
@@ -95,3 +109,4 @@
     <script src="./js/dashboard.js"></script>
 </body>
 </html>
+

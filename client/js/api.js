@@ -27,6 +27,7 @@ async function loginOrRegister(email, password) {
         });
         return await response.json();
     } catch (error) {
+        console.error("Login/Register request failed:", error);
         return { message: 'Error: Could not connect to the server.' };
     }
 }
@@ -53,6 +54,7 @@ async function saveCredentials(credentials) {
         });
         return await response.json();
     } catch (error) {
+        console.error("Save credentials request failed:", error);
         return { message: 'Error: Could not connect to the server.' };
     }
 }
@@ -74,6 +76,7 @@ async function getStrategies() {
         if (!response.ok) return [];
         return await response.json();
     } catch (error) {
+        console.error("Get strategies request failed:", error);
         return [];
     }
 }
@@ -81,14 +84,20 @@ async function getStrategies() {
 /**
  * Fetches a single strategy by its unique ID.
  * @param {string} strategyId - The ID of the strategy to fetch.
- * @returns {Promise<Object>} The strategy data.
+ * @returns {Promise<Object|null>} The strategy data, or null on error.
  */
 async function getStrategyById(strategyId) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) return null;
+        return await response.json();
+    } catch (error) {
+        console.error(`Get strategy by ID (${strategyId}) failed:`, error);
+        return null;
+    }
 }
 
 /**
@@ -110,6 +119,7 @@ async function saveStrategy(name, code) {
         });
         return await response.json();
     } catch (error) {
+        console.error("Save strategy request failed:", error);
         return { message: 'Error: Could not connect to the server.' };
     }
 }
@@ -122,16 +132,21 @@ async function saveStrategy(name, code) {
  * @returns {Promise<Object>} The server's response.
  */
 async function updateStrategy(strategyId, name, code) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ name, code }),
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ name, code }),
+        });
+        return await response.json();
+    } catch (error) {
+        console.error(`Update strategy (${strategyId}) failed:`, error);
+        return { message: 'Error: Could not connect to the server.' };
+    }
 }
 
 /**
@@ -140,13 +155,22 @@ async function updateStrategy(strategyId, name, code) {
  * @returns {Promise<Object>} The server's response.
  */
 async function deleteStrategy(strategyId) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error(`Delete strategy (${strategyId}) failed:`, error);
+        return { message: 'Error: Could not connect to the server.' };
+    }
 }
+
+// =================================================================
+// --- STRATEGY EXECUTION ---
+// =================================================================
 
 /**
  * Sends a command to start a strategy.
@@ -154,12 +178,17 @@ async function deleteStrategy(strategyId) {
  * @returns {Promise<Object>} The server's response.
  */
 async function startStrategy(strategyId) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/start`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/start`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error(`Start strategy (${strategyId}) failed:`, error);
+        return { message: 'Error: Could not connect to the server.' };
+    }
 }
 
 /**
@@ -168,12 +197,17 @@ async function startStrategy(strategyId) {
  * @returns {Promise<Object>} The server's response.
  */
 async function stopStrategy(strategyId) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/stop`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/stop`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error(`Stop strategy (${strategyId}) failed:`, error);
+        return { message: 'Error: Could not connect to the server.' };
+    }
 }
 
 /**
@@ -182,12 +216,17 @@ async function stopStrategy(strategyId) {
  * @returns {Promise<Object>} The server's response.
  */
 async function pauseStrategy(strategyId) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/pause`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/pause`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error(`Pause strategy (${strategyId}) failed:`, error);
+        return { message: 'Error: Could not connect to the server.' };
+    }
 }
 
 /**
@@ -196,17 +235,18 @@ async function pauseStrategy(strategyId) {
  * @returns {Promise<Object>} The server's response.
  */
 async function resumeStrategy(strategyId) {
-    const token = getToken();
-    const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/resume`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return await response.json();
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}/resume`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error(`Resume strategy (${strategyId}) failed:`, error);
+        return { message: 'Error: Could not connect to the server.' };
+    }
 }
-
-// =================================================================
-// --- CODE EXECUTION (from Terminal) ---
-// =================================================================
 
 /**
  * Sends code from the terminal to be run immediately.
@@ -228,6 +268,29 @@ async function runStrategy(code) {
     } catch (error) {
         console.error("Run strategy request failed:", error);
         return { output: 'Error: Could not connect to the server.' };
+    }
+}
+
+// =================================================================
+// --- DASHBOARD ---
+// =================================================================
+
+/**
+ * Fetches live data for the dashboard.
+ * @returns {Promise<Object>} The dashboard data.
+ */
+async function getDashboardData() {
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Get dashboard data request failed:", error);
+        return { error: "Could not connect to the server." };
     }
 }
 

@@ -5,17 +5,26 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            // Create an object with all the credential values from the form
+            const clientIdInput = document.getElementById('client-id');
+            const accessTokenInput = document.getElementById('token-id');
+
             const credentials = {
-                clientId: document.getElementById('client-id').value,
-                accessToken: document.getElementById('token-id').value,
-                brokerUsername: document.getElementById('broker-username').value,
-                brokerPassword: document.getElementById('broker-password').value,
-                totpSecret: document.getElementById('totp-secret').value
+                clientId: clientIdInput.value,
+                accessToken: accessTokenInput.value
             };
 
             const result = await saveCredentials(credentials);
+            
+            // Show the success or error message from the server
             alert(result.message);
+
+            // CORRECTED: If the save was successful, clear the input fields.
+            // Checks for "securely" to match the server's success message.
+            if (result.message.includes('securely')) {
+                clientIdInput.value = '';
+                accessTokenInput.value = '';
+            }
         });
     }
 });
+

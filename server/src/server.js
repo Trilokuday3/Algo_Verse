@@ -258,6 +258,48 @@ finally:
     }
 });
 
+// --- NEW: Protected Route to Get Dashboard Data ---
+app.get('/api/dashboard', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || !user.clientId || !user.accessToken) {
+            return res.status(400).json({ message: 'Broker credentials not set.' });
+        }
+
+        const decryptedClientId = decrypt(user.clientId);
+        const decryptedAccessToken = decrypt(user.accessToken);
+
+        const pythonScript = `
+import json
+try:
+    funds = tsl.get_funds()
+    positions = tsl.get_positions()
+    dashboard_data = {"funds": funds, "positions": positions}
+    print(json.dumps(dashboard_data))
+except Exception as e:
+    print(json.dumps({"error": str(e)}))
+`;
+
+        const rawOutput = await dockerService.runPythonCode(pythonScript, decryptedClientId, decryptedAccessToken);
+        
+        const jsonOutput = rawOutput.substring(rawOutput.indexOf('{'));
+        const brokerData = JSON.parse(jsonOutput);
+
+        const runningStrategies = user.strategies.filter(s => s.status === 'Running').length;
+
+        const responsePayload = {
+            brokerData: brokerData,
+            savedStrategies: user.strategies.length,
+            runningStrategies: runningStrategies
+        };
+
+        res.json(responsePayload);
+    } catch (error) {
+        console.error("Dashboard data error:", error);
+        res.status(500).json({ message: "Error fetching dashboard data." });
+    }
+});
+
 // =================================================================
 // --- WebSocket Logic ---
 // =================================================================
