@@ -301,6 +301,96 @@ except Exception as e:
 });
 
 // =================================================================
+// --- USER PROFILE ROUTES (Protected) ---
+// =================================================================
+
+// Get user profile
+app.get('/api/user/profile', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        
+        // Return profile with masked credential status
+        const profile = {
+            email: user.email,
+            createdAt: user._id.getTimestamp(), // MongoDB ObjectId contains creation timestamp
+            strategies: user.strategies,
+            hasClientId: !!user.clientId,
+            hasAccessToken: !!user.accessToken,
+            hasBrokerUsername: !!user.brokerUsername,
+            hasBrokerPassword: !!user.brokerPassword,
+            hasTotpSecret: !!user.totpSecret
+        };
+        
+        res.json(profile);
+    } catch (error) {
+        console.error("Get profile error:", error);
+        res.status(500).json({ message: 'Error fetching profile.' });
+    }
+});
+
+// Change password
+app.post('/api/user/change-password', authMiddleware, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Please provide both current and new password.' });
+        }
+        
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters.' });
+        }
+        
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        
+        // Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Current password is incorrect.' });
+        }
+        
+        // Hash and save new password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+        await user.save();
+        
+        res.json({ message: 'Password changed successfully!' });
+    } catch (error) {
+        console.error("Change password error:", error);
+        res.status(500).json({ message: 'Error changing password.' });
+    }
+});
+
+// Delete account
+app.delete('/api/user/delete', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+        
+        // Stop all running strategies before deleting
+        for (const strategy of user.strategies) {
+            if (strategy.containerId) {
+                try {
+                    await dockerService.stopStrategyContainer(strategy.containerId);
+                } catch (err) {
+                    console.error(`Error stopping container ${strategy.containerId}:`, err);
+                }
+            }
+        }
+        
+        // Delete the user
+        await User.findByIdAndDelete(req.userId);
+        
+        res.json({ message: 'Account deleted successfully.' });
+    } catch (error) {
+        console.error("Delete account error:", error);
+        res.status(500).json({ message: 'Error deleting account.' });
+    }
+});
+
+// =================================================================
 // --- WebSocket Logic ---
 // =================================================================
 io.on('connection', (socket) => {

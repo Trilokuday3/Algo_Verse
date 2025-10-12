@@ -294,3 +294,72 @@ async function getDashboardData() {
     }
 }
 
+// =================================================================
+// --- USER PROFILE ---
+// =================================================================
+
+/**
+ * Fetches the user's profile information.
+ * @returns {Promise<Object>} The user's profile data.
+ */
+async function getUserProfile() {
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Get user profile request failed:", error);
+        return { error: "Could not connect to the server." };
+    }
+}
+
+/**
+ * Changes the user's password.
+ * @param {string} currentPassword - The current password.
+ * @param {string} newPassword - The new password.
+ * @returns {Promise<Object>} The server's response.
+ */
+async function changePassword(currentPassword, newPassword) {
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/user/change-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const data = await response.json();
+        return { success: response.ok, ...data };
+    } catch (error) {
+        console.error("Change password request failed:", error);
+        return { success: false, message: 'Error: Could not connect to the server.' };
+    }
+}
+
+/**
+ * Deletes the user's account.
+ * @returns {Promise<Object>} The server's response.
+ */
+async function deleteAccount() {
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/user/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        return { success: response.ok, ...data };
+    } catch (error) {
+        console.error("Delete account request failed:", error);
+        return { success: false, message: 'Error: Could not connect to the server.' };
+    }
+}
+
