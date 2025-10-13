@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Update account icon with user's email initial
     await updateAccountIcon();
 
-    const settingsForm = document.getElementById('settingsForm');
-    const tokenTextarea = document.getElementById('token-id');
-    const toggleButton = document.getElementById('toggle-token-visibility');
-    const eyeIcon = document.getElementById('eye-icon');
-    const eyeOffIcon = document.getElementById('eye-off-icon');
-    const toggleText = document.getElementById('toggle-text');
+    const settingsForm = document.getElementById('profileBrokerForm');
+    const tokenTextarea = document.getElementById('token-id-profile');
+    const toggleButton = document.getElementById('toggle-token-visibility-profile');
+    const eyeIcon = document.getElementById('eye-icon-profile');
+    const eyeOffIcon = document.getElementById('eye-off-icon-profile');
+    const toggleText = document.getElementById('toggle-text-profile');
 
     let isTokenVisible = false;
     let actualTokenValue = '';
@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         settingsForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const clientIdInput = document.getElementById('client-id');
-            const brokerSelect = document.getElementById('broker-select');
+            const clientIdInput = document.getElementById('client-id-profile');
+            const brokerSelect = document.getElementById('broker-select-profile');
 
             const credentials = {
                 broker: brokerSelect ? brokerSelect.value : 'dhan',
