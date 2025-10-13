@@ -317,45 +317,109 @@
 
                 <!-- Broker Section -->
                 <section id="broker-section" class="content-section hidden">
-                    <div class="m3-card p-8 mb-6">
-                        <h2 class="m3-headline-medium mb-6" style="color: var(--on-surface-color);">Connect with Your Broker</h2>
-                        <p class="m3-body-large mb-6" style="color: var(--on-surface-variant-color);">Configure your broker credentials to start trading with Alpha Z. All credentials are encrypted and stored securely.</p>
-                        
-                        <div class="space-y-6">
-                            <div class="p-6 rounded-lg" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color);">
-                                <div class="flex items-start space-x-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-1">
-                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                    </svg>
-                                    <div>
-                                        <h3 class="m3-title-medium mb-2">Your Data is Secure</h3>
-                                        <p class="m3-body-medium">We use industry-standard encryption to protect your broker credentials. Your data is encrypted at rest and in transit.</p>
-                                    </div>
-                                </div>
-                            </div>
-
+                    <!-- Broker Credentials Card -->
+                    <div class="m3-card p-8 mb-6 hover:shadow-lg transition-shadow">
+                        <div class="flex items-start justify-between mb-6">
                             <div>
-                                <h3 class="m3-title-large mb-4" style="color: var(--on-surface-color);">Supported Brokers</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="p-4 rounded-lg border" style="border-color: var(--outline-color);">
-                                        <h4 class="m3-title-medium mb-2" style="color: var(--on-surface-color);">Tradehull</h4>
-                                        <p class="m3-body-small" style="color: var(--on-surface-variant-color);">Primary broker integration</p>
-                                    </div>
-                                    <div class="p-4 rounded-lg border opacity-50" style="border-color: var(--outline-color);">
-                                        <h4 class="m3-title-medium mb-2" style="color: var(--on-surface-color);">More Coming Soon</h4>
-                                        <p class="m3-body-small" style="color: var(--on-surface-variant-color);">We're adding more brokers</p>
+                                <h2 class="m3-headline-small font-semibold mb-2" style="color: var(--on-surface-color);">Broker Credentials</h2>
+                                <p class="m3-body-medium" style="color: var(--on-surface-variant-color);">Connect your broker account to start automated trading</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <form id="profileBrokerForm" class="space-y-6">
+                            <!-- Broker Selection Dropdown -->
+                            <div>
+                                <label for="broker-select-profile" class="block m3-label-large mb-2" style="color: var(--on-surface-color);">Select Broker</label>
+                                <div class="relative">
+                                    <select id="broker-select-profile" class="w-full px-4 py-3 rounded-lg m3-body-large focus:outline-none focus:ring-2 transition-all appearance-none cursor-pointer" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-variant-color);">
+                                        <option value="dhan">Dhan</option>
+                                        <option value="zerodha">Zerodha</option>
+                                        <option value="upstox">Upstox</option>
+                                        <option value="groww">Groww</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-surface-variant-color);">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mt-6">
-                                <a href="settings.html" class="m3-filled-button m3-label-large px-6 py-3 rounded-full inline-flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
+                            <!-- Client ID -->
+                            <div>
+                                <label for="client-id-profile" class="block m3-label-large mb-2" style="color: var(--on-surface-color);">Client ID</label>
+                                <input 
+                                    type="text" 
+                                    id="client-id-profile" 
+                                    class="w-full px-4 py-3 rounded-lg font-mono m3-body-medium focus:outline-none focus:ring-2 transition-all" 
+                                    style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-variant-color);"
+                                    placeholder="Enter your client ID"
+                                >
+                            </div>
+                            
+                            <!-- Access Token -->
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="token-id-profile" class="block m3-label-large" style="color: var(--on-surface-color);">Access Token</label>
+                                    <button type="button" id="toggle-token-visibility-profile" class="flex items-center space-x-2 m3-text-button m3-label-small px-3 py-1.5 rounded-full hover:bg-gray-500/10 transition-all" style="color: var(--on-surface-variant-color);" aria-label="Toggle token visibility">
+                                        <svg id="eye-icon-profile" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                        <svg id="eye-off-icon-profile" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                                        </svg>
+                                        <span id="toggle-text-profile">Show</span>
+                                    </button>
+                                </div>
+                                <textarea 
+                                    id="token-id-profile" 
+                                    rows="3" 
+                                    class="w-full px-4 py-3 rounded-lg font-mono m3-body-medium resize-none focus:outline-none focus:ring-2 transition-all" 
+                                    style="background-color: var(--surface-variant-color); color: var(--on-surface-color); word-wrap: break-word; overflow-wrap: break-word; border: 1px solid var(--outline-variant-color);"
+                                    placeholder="Paste your access token here..."
+                                ></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="flex items-center justify-between pt-4">
+                                <p class="m3-body-small" style="color: var(--on-surface-variant-color);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-1" style="color: var(--primary-color);">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                     </svg>
-                                    <span>Go to Settings to Configure</span>
-                                </a>
+                                    Your credentials are encrypted and stored securely
+                                </p>
+                                <button type="submit" class="m3-filled-button m3-label-large px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-2">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                        <polyline points="7 3 7 8 15 8"></polyline>
+                                    </svg>
+                                    Save Credentials
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Security Info Card -->
+                    <div class="m3-card p-6 mt-6" style="background-color: var(--secondary-container-color);">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: var(--on-secondary-container-color); opacity: 0.2;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="m3-title-medium font-semibold mb-2" style="color: var(--on-secondary-container-color);">Your Data is Secure</h3>
+                                <p class="m3-body-medium" style="color: var(--on-secondary-container-color);">We use industry-standard encryption to protect your broker credentials. Your data is encrypted at rest and in transit.</p>
                             </div>
                         </div>
                     </div>
