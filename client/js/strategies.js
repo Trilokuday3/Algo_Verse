@@ -3,21 +3,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     await updateAccountIcon();
 
     const strategiesContainer = document.getElementById('strategies-container');
-    let logViewerModal = null; // This will hold the modal element after it's loaded
+    let logViewerModal = document.getElementById('log-viewer-modal'); // Get the modal element
+    let currentStrategyId = null; // Track which strategy's logs we're viewing
 
-    // --- 1. Load the Log Viewer Modal into the page ---
-    fetch('log-viewer.html')
-        .then(response => response.text())
-        .then(html => {
-            document.body.insertAdjacentHTML('beforeend', html);
-            logViewerModal = document.getElementById('log-viewer-modal');
-            
-            // Add event listener to the modal's close button
-            document.getElementById('close-log-viewer').addEventListener('click', () => {
-                logViewerModal.classList.add('hidden');
-                logViewerModal.classList.remove('flex');
-            });
-        });
+    // --- 1. Initialize the Log Viewer (HTML is now embedded in strategies.html) ---
+    console.log('Initializing log viewer...');
+    if (window.initializeLogViewer) {
+        console.log('Calling initializeLogViewer...');
+        window.initializeLogViewer();
+    } else {
+        console.error('window.initializeLogViewer not found!');
+    }
 
     // --- 2. Connect to the WebSocket Server ---
     const socket = io('http://localhost:3000');
@@ -27,11 +23,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- 3. Listen for incoming log messages ---
     socket.on('strategy-log', (data) => {
-        const logContent = document.getElementById('log-viewer-content');
+        console.log('Received strategy-log event:', data);
+        console.log('Current strategy ID:', currentStrategyId);
+        console.log('Modal hidden?', logViewerModal?.classList.contains('hidden'));
+        
         // Check if the modal is open and if the incoming log belongs to the strategy being viewed
-        if (logContent && !logViewerModal.classList.contains('hidden') && logViewerModal.dataset.strategyId === data.strategyId) {
-            logContent.innerHTML += `<div>&gt; ${data.message}</div>`;
-            logContent.scrollTop = logContent.scrollHeight; // Auto-scroll to the bottom
+        if (logViewerModal && !logViewerModal.classList.contains('hidden') && currentStrategyId === data.strategyId) {
+            console.log('Adding log to viewer:', data.message);
+            // Use the enhanced log viewer's addLog function
+            const logType = data.level || 'info'; // Get log level from data or default to 'info'
+            if (window.addLog) {
+                window.addLog(data.message, logType);
+            }
+        } else {
+            console.log('Log not displayed because:', {
+                modalExists: !!logViewerModal,
+                modalHidden: logViewerModal?.classList.contains('hidden'),
+                strategyMatch: currentStrategyId === data.strategyId
+            });
         }
     });
 
@@ -97,28 +106,67 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         if (target.classList.contains('view-logs-btn')) {
             const strategyName = target.dataset.name;
-            if (logViewerModal) {
-                document.getElementById('log-viewer-title').textContent = `Logs: ${strategyName}`;
-                document.getElementById('log-viewer-content').innerHTML = '<div>Connecting to log stream...</div>';
-                logViewerModal.dataset.strategyId = strategyId; // Set ID to filter incoming logs
-                logViewerModal.classList.remove('hidden');
-                logViewerModal.classList.add('flex');
+            currentStrategyId = strategyId; // Set the current strategy ID
+            
+            console.log('View logs button clicked');
+            console.log('logViewerModal loaded?', !!logViewerModal);
+            console.log('window.openLogViewer exists?', typeof window.openLogViewer);
+            console.log('window.addLog exists?', typeof window.addLog);
+            
+            // Wait for modal to be loaded
+            if (!logViewerModal) {
+                alert('Log viewer is still loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            if (window.openLogViewer) {
+                window.openLogViewer(strategyName);
+                console.log('Log viewer opened for strategy:', strategyName);
+            } else {
+                console.error('window.openLogViewer is not available');
             }
         } 
         else {
             let result;
-            if (target.classList.contains('start-btn')) result = await startStrategy(strategyId);
+            let shouldOpenLogs = false;
+            let strategyName = '';
+            
+            if (target.classList.contains('start-btn')) {
+                result = await startStrategy(strategyId);
+                shouldOpenLogs = true;
+                // Get strategy name from the card
+                const card = target.closest('.m3-card');
+                const nameElement = card.querySelector('.m3-title-large');
+                strategyName = nameElement ? nameElement.textContent : 'Strategy';
+            }
             else if (target.classList.contains('stop-btn')) result = await stopStrategy(strategyId);
             else if (target.classList.contains('pause-btn')) result = await pauseStrategy(strategyId);
-            else if (target.classList.contains('resume-btn')) result = await resumeStrategy(strategyId);
+            else if (target.classList.contains('resume-btn')) {
+                result = await resumeStrategy(strategyId);
+                shouldOpenLogs = true;
+                // Get strategy name from the card
+                const card = target.closest('.m3-card');
+                const nameElement = card.querySelector('.m3-title-large');
+                strategyName = nameElement ? nameElement.textContent : 'Strategy';
+            }
             else if (target.classList.contains('delete-btn')) {
                 if (confirm('Are you sure you want to delete this strategy?')) {
                     result = await deleteStrategy(strategyId);
                 }
             }
+            
             if (result) {
                 alert(result.message);
                 loadStrategies(); // Refresh the entire view after any action
+                
+                // Auto-open log viewer when strategy starts/resumes
+                if (shouldOpenLogs && result.success && window.openLogViewer) {
+                    setTimeout(() => {
+                        currentStrategyId = strategyId;
+                        window.openLogViewer(strategyName);
+                        console.log('Auto-opened log viewer for strategy:', strategyName);
+                    }, 500);
+                }
             }
         }
     });
