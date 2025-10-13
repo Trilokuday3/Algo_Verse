@@ -14,7 +14,38 @@
     <!-- Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/settings.css">
+    
+    <style>
+        /* Account Dropdown Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        #account-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 16px;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-variant-color) 100%);
+            border-left: 2px solid var(--outline-color);
+            border-top: 2px solid var(--outline-color);
+            transform: rotate(45deg);
+            z-index: -1;
+        }
+    </style>
 </head>
 <body class="antialiased min-h-screen" style="background-color: var(--surface-color);">
 

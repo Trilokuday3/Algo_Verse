@@ -23,23 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // If there's a hash in the URL, open that section automatically
-    const hash = window.location.hash;
-    if (hash) {
-        const targetId = hash.replace('#', '');
-        const targetSectionEl = document.getElementById(targetId);
-        if (targetSectionEl) {
-            // Hide all sections and show the target
-            contentSections.forEach(section => section.classList.add('hidden'));
-            targetSectionEl.classList.remove('hidden');
-
-            // Update sidebar active link
-            sidebarLinks.forEach(l => l.classList.remove('active'));
-            const activeLink = Array.from(sidebarLinks).find(l => l.getAttribute('data-section') === targetId);
-            if (activeLink) activeLink.classList.add('active');
-        }
-    }
-
     // Event Listeners
     const editAccountBtn = document.getElementById('edit-account-btn');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
