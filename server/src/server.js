@@ -66,29 +66,122 @@ app.post('/api/auth/login-or-register', async (req, res) => {
 
 // --- Credentials Route (Protected) ---
 app.post('/api/credentials', authMiddleware, async (req, res) => {
-    const { clientId, accessToken, brokerUsername, brokerPassword, totpSecret, broker } = req.body;
+    const { clientId, accessToken, brokerUsername, brokerPassword, totpSecret, broker, apiKey, apiSecret } = req.body;
+    
     try {
+        // Validate broker is provided
+        if (!broker) {
+            return res.status(400).json({ message: 'Broker selection is required.' });
+        }
+        
+        // Validate broker is one of the allowed brokers
+        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone', 'tradehull'];
+        if (!allowedBrokers.includes(broker.toLowerCase())) {
+            return res.status(400).json({ 
+                message: `Invalid broker. Only ${allowedBrokers.join(', ')} are supported.` 
+            });
+        }
+        
+        // Normalize broker name to lowercase
+        const normalizedBroker = broker.toLowerCase();
+        
         const Credentials = getCredentialsModel();
-        const updates = { userId: req.userId };
         
-        if (broker) updates.broker = broker;
-        if (clientId) updates.clientId = encrypt(clientId);
-        if (accessToken) updates.accessToken = encrypt(accessToken);
-        if (brokerUsername) updates.brokerUsername = encrypt(brokerUsername);
-        if (brokerPassword) updates.brokerPassword = encrypt(brokerPassword);
-        if (totpSecret) updates.totpSecret = encrypt(totpSecret);
+        // Check if this broker already exists for user (will be updated)
+        const existingBroker = await Credentials.findOne({ 
+            userId: req.userId, 
+            broker: normalizedBroker 
+        });
         
-        // Upsert: update if exists, create if doesn't
+        // If this is a NEW broker, check if user already has 4 brokers
+        if (!existingBroker) {
+            const userBrokerCount = await Credentials.countDocuments({ userId: req.userId });
+            
+            if (userBrokerCount >= 4) {
+                return res.status(400).json({ 
+                    message: 'Maximum 4 brokers allowed. Please delete an existing broker first.' 
+                });
+            }
+        }
+        
+        // Prepare credential data with encryption
+        const credentialData = {
+            userId: req.userId,
+            broker: normalizedBroker,
+            clientId: clientId ? encrypt(clientId) : '',
+            accessToken: accessToken ? encrypt(accessToken) : '',
+            brokerUsername: brokerUsername ? encrypt(brokerUsername) : '',
+            brokerPassword: brokerPassword ? encrypt(brokerPassword) : '',
+            totpSecret: totpSecret ? encrypt(totpSecret) : '',
+            apiKey: apiKey ? encrypt(apiKey) : '',
+            apiSecret: apiSecret ? encrypt(apiSecret) : ''
+        };
+        
+        // Upsert: update if broker exists for user, create if new broker
         await Credentials.findOneAndUpdate(
-            { userId: req.userId },
-            updates,
+            { userId: req.userId, broker: normalizedBroker },
+            credentialData,
             { upsert: true, new: true }
         );
         
-        res.json({ message: 'Credentials saved securely!' });
+        res.json({ 
+            message: existingBroker 
+                ? `${normalizedBroker} credentials updated successfully!` 
+                : `${normalizedBroker} credentials saved successfully!` 
+        });
     } catch (error) {
         console.error("Save credentials error:", error);
         res.status(500).json({ message: "Error saving credentials." });
+    }
+});
+
+// Get all saved credentials for user
+app.get('/api/credentials', authMiddleware, async (req, res) => {
+    try {
+        const Credentials = getCredentialsModel();
+        const credentials = await Credentials.find({ userId: req.userId });
+        
+        // Decrypt for display (send back decrypted)
+        const decryptedCredentials = credentials.map(cred => ({
+            _id: cred._id,
+            broker: cred.broker,
+            clientId: cred.clientId ? decrypt(cred.clientId) : '',
+            accessToken: cred.accessToken ? decrypt(cred.accessToken) : '',
+            brokerUsername: cred.brokerUsername ? decrypt(cred.brokerUsername) : '',
+            brokerPassword: cred.brokerPassword ? decrypt(cred.brokerPassword) : '',
+            totpSecret: cred.totpSecret ? decrypt(cred.totpSecret) : '',
+            apiKey: cred.apiKey ? decrypt(cred.apiKey) : '',
+            apiSecret: cred.apiSecret ? decrypt(cred.apiSecret) : '',
+            createdAt: cred.createdAt,
+            updatedAt: cred.updatedAt
+        }));
+        
+        res.json(decryptedCredentials);
+    } catch (error) {
+        console.error("Get credentials error:", error);
+        res.status(500).json({ message: "Error fetching credentials." });
+    }
+});
+
+// Delete a specific broker's credentials
+app.delete('/api/credentials/:broker', authMiddleware, async (req, res) => {
+    try {
+        const Credentials = getCredentialsModel();
+        const broker = req.params.broker;
+        
+        const deleted = await Credentials.findOneAndDelete({ 
+            userId: req.userId, 
+            broker: broker 
+        });
+        
+        if (!deleted) {
+            return res.status(404).json({ message: `No credentials found for ${broker}.` });
+        }
+        
+        res.json({ message: `${broker} credentials deleted successfully.` });
+    } catch (error) {
+        console.error("Delete credentials error:", error);
+        res.status(500).json({ message: "Error deleting credentials." });
     }
 });
 
@@ -334,10 +427,23 @@ app.get('/api/user/profile', authMiddleware, async (req, res) => {
         // Get strategies from strategy database
         const strategies = await Strategy.find({ userId: req.userId });
         
-        // Get credentials from credentials database
-        const credentials = await Credentials.findOne({ userId: req.userId });
+        // Get all broker credentials from credentials database
+        const allCredentials = await Credentials.find({ userId: req.userId });
         
-        // Return profile with masked credential status
+        // Map credentials to show which brokers are configured
+        const brokerStatus = allCredentials.map(cred => ({
+            broker: cred.broker,
+            hasClientId: !!cred.clientId,
+            hasAccessToken: !!cred.accessToken,
+            hasBrokerUsername: !!cred.brokerUsername,
+            hasBrokerPassword: !!cred.brokerPassword,
+            hasTotpSecret: !!cred.totpSecret,
+            hasApiKey: !!cred.apiKey,
+            hasApiSecret: !!cred.apiSecret,
+            updatedAt: cred.updatedAt
+        }));
+        
+        // Return profile with all broker information
         const profile = {
             email: user.email,
             firstName: user.firstName || '',
@@ -345,11 +451,9 @@ app.get('/api/user/profile', authMiddleware, async (req, res) => {
             phone: user.phone || '',
             createdAt: user._id.getTimestamp(), // MongoDB ObjectId contains creation timestamp
             strategies: strategies,
-            hasClientId: !!(credentials?.clientId),
-            hasAccessToken: !!(credentials?.accessToken),
-            hasBrokerUsername: !!(credentials?.brokerUsername),
-            hasBrokerPassword: !!(credentials?.brokerPassword),
-            hasTotpSecret: !!(credentials?.totpSecret)
+            brokers: brokerStatus, // Array of all configured brokers
+            brokerCount: allCredentials.length, // How many brokers configured (max 4)
+            maxBrokers: 4 // Maximum allowed
         };
         
         res.json(profile);

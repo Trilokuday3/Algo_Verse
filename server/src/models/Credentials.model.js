@@ -6,15 +6,14 @@ const credentialsSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true, // One credentials document per user
-        index: true
+        index: true // Index for faster queries
     },
     
-    // Broker selection
+    // Broker selection (required and unique per user)
     broker: {
         type: String,
-        enum: ['dhan', 'zerodha', 'upstox', 'angelone', 'fyers', 'other'],
-        default: 'dhan'
+        enum: ['dhan', 'zerodha', 'upstox', 'angelone', 'tradehull'],
+        required: true
     },
     
     // Encrypted credentials for running strategies
@@ -53,6 +52,9 @@ const credentialsSchema = new mongoose.Schema({
 }, {
     timestamps: true // Adds createdAt and updatedAt
 });
+
+// Compound index: one credential per broker per user (prevents duplicates)
+credentialsSchema.index({ userId: 1, broker: 1 }, { unique: true });
 
 // Function to get Credentials model with the correct connection
 const getCredentialsModel = () => {
