@@ -3,107 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alpha Z Trading Dashboard - Monitor your portfolio and trading positions">
     <title>Dashboard - Alpha Z</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
 </head>
-<body class="antialiased">
-    <div class="flex h-screen" style="background-color: var(--surface-color);">
-        <!-- Sidebar -->
-        <aside class="w-64 flex-shrink-0 p-4 flex flex-col" style="background-color: var(--m3-surface-tonal);">
-            <div>
-                <a href="dashboard.html" class="flex items-center space-x-3 mb-10 px-2">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+<body class="antialiased min-h-screen" style="background-color: var(--surface-color);">
+
+    <!-- Header Navigation -->
+    <header class="m3-top-app-bar sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="dashboard.html" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                    <span class="text-2xl font-bold" style="color: var(--on-primary-container-color);">α</span>
+                </div>
+                <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="dashboard.html" class="m3-filled-button m3-label-large px-4 py-2 rounded-full transition-all" aria-current="page">Dashboard</a>
+                <a href="strategies.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">My Strategies</a>
+                <a href="terminal.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Terminal</a>
+                <a href="profile.html#broker-section" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Broker Connection</a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-3">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:opacity-80 transition-opacity" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <!-- Account Menu -->
+                <div class="relative">
+                    <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all hover:scale-105 shadow-md" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);" aria-label="Account Menu" aria-expanded="false" aria-haspopup="true">
+                        <span id="account-icon" class="font-bold text-lg">A</span>
+                    </button>
+                    <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in" style="background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-variant-color) 100%); border: 2px solid var(--outline-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+                        <div class="p-4">
+                            <!-- Account Header with Avatar -->
+                            <div class="px-3 py-4 rounded-xl mb-3" style="background-color: var(--primary-container-color);">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-md" style="background-color: var(--primary-color); color: var(--on-primary-color);">
+                                        <span id="dropdown-avatar-text">A</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="m3-title-medium font-semibold truncate" style="color: var(--on-primary-container-color);">Account</p>
+                                        <p id="dropdown-email" class="m3-body-small mt-0.5 truncate" style="color: var(--on-primary-container-color); opacity: 0.8;">Loading...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Menu Items -->
+                            <div class="space-y-1">
+                                <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
+                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <span>Profile Settings</span>
+                                </a>
+                                <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
+                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--secondary-container-color);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
+                                            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </div>
+                                    <span>Broker Settings</span>
+                                </a>
+                            </div>
+                            
+                            <div class="my-3" style="border-top: 1px solid var(--outline-variant-color);"></div>
+                            
+                            <!-- Logout Button -->
+                            <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02] w-full text-left" style="color: var(--error-color); background-color: transparent;" onmouseover="this.style.backgroundColor='rgba(var(--error-rgb, 220, 53, 69), 0.1)'" onmouseout="this.style.backgroundColor='transparent'">
+                                <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: rgba(var(--error-rgb, 220, 53, 69), 0.15);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--error-color);">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                </div>
+                                <span class="font-semibold">Logout</span>
+                            </button>
+                        </div>
                     </div>
-                    <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
-                </a>
-                <nav class="flex flex-col space-y-2">
-                    <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large" style="background-color: var(--secondary-container-color); color: var(--on-secondary-container-color);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="strategies.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
-                        <span>My Strategies</span>
-                    </a>
-                    <a href="terminal.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-                        <span>Terminal</span>
-                    </a>
-                    <a href="settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        <span>Settings</span>
-                    </a>
-                </nav>
-            </div>
-            <div class="mt-auto">
-                <a href="index.html" class="flex items-center space-x-3 px-4 py-3 rounded-full m3-label-large hover:bg-gray-500/10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-8 overflow-y-auto">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="m3-headline-medium">Dashboard</h1>
-                <div class="flex items-center space-x-4">
-                     <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
-                         <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                         <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                     </button>
-                    <img src="https://placehold.co/40x40/EADDFF/21005D?text=A" alt="Account Avatar" class="w-10 h-10 rounded-full cursor-pointer">
                 </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 md:px-6 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="m3-headline-large font-bold mb-2">Dashboard</h1>
+            <p class="m3-body-large" style="color: var(--on-surface-variant-color);">Monitor your portfolio performance and active positions</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+            <!-- Net Worth Card -->
+            <div class="m3-card p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-start justify-between mb-3">
+                    <h3 class="m3-title-medium" style="color: var(--on-surface-variant-color);">Net Worth</h3>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <p id="net-worth" class="m3-headline-medium font-bold">₹0.00</p>
+                <p class="m3-body-small mt-1" style="color: var(--on-surface-variant-color);">Total portfolio value</p>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="m3-card p-6">
-                    <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Net Worth</h3>
-                    <p id="net-worth" class="m3-headline-medium mt-2">N/A</p>
+            <!-- Today's P&L Card -->
+            <div class="m3-card p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-start justify-between mb-3">
+                    <h3 class="m3-title-medium" style="color: var(--on-surface-variant-color);">Today's P&L</h3>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--secondary-container-color);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
                 </div>
-                <div class="m3-card p-6">
-                    <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Today's P&L</h3>
-                    <p id="pnl" class="m3-headline-medium mt-2">N/A</p>
-                </div>
-                 <div class="m3-card p-6">
-                    <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Saved Strategies</h3>
-                    <p id="saved-strategies" class="m3-headline-medium mt-2">0</p>
-                </div>
-                 <div class="m3-card p-6">
-                    <h3 class="m3-title-large" style="color: var(--on-surface-variant-color);">Broker Status</h3>
-                    <p class="m3-headline-medium mt-2 flex items-center">
-                        <span id="broker-status-icon" class="w-3 h-3 rounded-full bg-gray-500 mr-2"></span>
-                        <span id="broker-status-text">Connecting...</span>
-                    </p>
-                </div>
+                <p id="pnl" class="m3-headline-medium font-bold text-green-600">+₹0.00</p>
+                <p id="pnl-percent" class="m3-body-small mt-1 text-green-600">+0.00%</p>
             </div>
 
+            <!-- Active Strategies Card -->
+            <div class="m3-card p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-start justify-between mb-3">
+                    <h3 class="m3-title-medium" style="color: var(--on-surface-variant-color);">Active Strategies</h3>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--tertiary-container-color, var(--primary-container-color));">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-tertiary-container-color, var(--on-primary-container-color));">
+                            <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
+                        </svg>
+                    </div>
+                </div>
+                <p id="active-strategies" class="m3-headline-medium font-bold">0</p>
+                <p class="m3-body-small mt-1" style="color: var(--on-surface-variant-color);">Running strategies</p>
+            </div>
+
+            <!-- Broker Status Card -->
+            <div class="m3-card p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-start justify-between mb-3">
+                    <h3 class="m3-title-medium" style="color: var(--on-surface-variant-color);">Broker Status</h3>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--surface-variant-color);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-surface-variant-color);">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="m3-headline-small font-bold flex items-center">
+                    <span id="broker-status-icon" class="w-2.5 h-2.5 rounded-full bg-yellow-500 mr-2 animate-pulse"></span>
+                    <span id="broker-status-text">Connecting...</span>
+                </p>
+                <p class="m3-body-small mt-1" style="color: var(--on-surface-variant-color);">Connection status</p>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Positions Table -->
-            <div class="m3-card p-6">
-                 <h3 class="m3-title-large mb-4">Live Positions</h3>
-                 <table class="w-full text-left">
-                    <thead>
-                        <tr>
-                            <th class="py-2 pr-4 m3-label-large">Symbol</th>
-                            <th class="py-2 pr-4 m3-label-large text-right">Qty</th>
-                            <th class="py-2 pr-4 m3-label-large text-right">LTP</th>
-                            <th class="py-2 pr-4 m3-label-large text-right">P&L</th>
-                        </tr>
-                    </thead>
-                    <tbody id="positions-tbody" class="m3-body-large">
-                        <tr><td colspan="4" class="py-4 text-center" style="color: var(--on-surface-variant-color);">Loading positions...</td></tr>
-                    </tbody>
-                 </table>
+            <div class="lg:col-span-2 m3-card p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="m3-title-large font-semibold">Active Positions</h2>
+                    <button id="refresh-positions" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-colors" aria-label="Refresh positions">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-separate border-spacing-y-2">
+                        <thead>
+                            <tr style="color: var(--on-surface-variant-color);">
+                                <th class="py-3 px-4 m3-label-large font-semibold">Symbol</th>
+                                <th class="py-3 px-4 m3-label-large font-semibold text-right">Quantity</th>
+                                <th class="py-3 px-4 m3-label-large font-semibold text-right">LTP</th>
+                                <th class="py-3 px-4 m3-label-large font-semibold text-right">P&L</th>
+                                <th class="py-3 px-4 m3-label-large font-semibold text-right">% Change</th>
+                            </tr>
+                        </thead>
+                        <tbody id="positions-tbody" class="m3-body-large">
+                            <tr>
+                                <td colspan="5" class="py-8 text-center" style="color: var(--on-surface-variant-color);">
+                                    <div class="flex flex-col items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-3 opacity-50">
+                                            <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                        </svg>
+                                        <p class="m3-body-large">Loading positions...</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </main>
-    </div>
 
+            <!-- Quick Actions & Market Status -->
+            <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div class="m3-card p-6">
+                    <h2 class="m3-title-large font-semibold mb-4">Quick Actions</h2>
+                    <div class="space-y-3">
+                        <a href="terminal.html" class="m3-filled-button w-full m3-label-large px-4 py-3 rounded-lg flex items-center justify-between group">
+                            <span>Create Strategy</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                        <a href="strategies.html" class="m3-tonal-button w-full m3-label-large px-4 py-3 rounded-lg flex items-center justify-between group">
+                            <span>View All Strategies</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                        <a href="profile.html#broker-section" class="m3-outlined-button w-full m3-label-large px-4 py-3 rounded-lg flex items-center justify-between group">
+                            <span>Broker Settings</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+                                <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Market Status -->
+                <div class="m3-card p-6">
+                    <h2 class="m3-title-large font-semibold mb-4">Market Status</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between py-2">
+                            <span class="m3-body-large" style="color: var(--on-surface-variant-color);">NSE</span>
+                            <span id="nse-status" class="m3-label-medium px-3 py-1 rounded-full bg-green-100 text-green-800">Open</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <span class="m3-body-large" style="color: var(--on-surface-variant-color);">BSE</span>
+                            <span id="bse-status" class="m3-label-medium px-3 py-1 rounded-full bg-green-100 text-green-800">Open</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <span class="m3-body-large" style="color: var(--on-surface-variant-color);">MCX</span>
+                            <span id="mcx-status" class="m3-label-medium px-3 py-1 rounded-full bg-gray-100 text-gray-800">Closed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
     <script src="./js/main.js"></script>
     <script src="./js/api.js"></script>
     <script src="./js/dashboard.js"></script>

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alpha Z Profile - Manage your account and settings">
+    <title>Profile - Alpha Z</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/profile.css">
+</head>
+<body class="antialiased min-h-screen" style="background-color: var(--surface-color);">
+
+    <!-- Header Navigation -->
+    <header class="m3-top-app-bar sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="dashboard.html" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                    <span class="text-2xl font-bold" style="color: var(--on-primary-container-color);">α</span>
+                </div>
+                <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="dashboard.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Dashboard</a>
+                <a href="strategies.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">My Strategies</a>
+                <a href="terminal.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Terminal</a>
+                <a href="profile.html#broker-section" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Broker Connection</a>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-3">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:opacity-80 transition-opacity" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <!-- Account Menu -->
+                    <div class="relative">
+                        <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all hover:scale-105 shadow-md" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);" aria-label="Account Menu" aria-expanded="false" aria-haspopup="true">
+                            <span id="account-icon" class="font-bold text-lg">A</span>
+                        </button>
+                        <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in" style="background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-variant-color) 100%); border: 2px solid var(--outline-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+                            <div class="p-4">
+                                <!-- Account Header with Avatar -->
+                                <div class="px-3 py-4 rounded-xl mb-3" style="background-color: var(--primary-container-color);">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-md" style="background-color: var(--primary-color); color: var(--on-primary-color);">
+                                            <span id="dropdown-avatar-text">A</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="m3-title-medium font-semibold truncate" style="color: var(--on-primary-container-color);">Account</p>
+                                            <p id="dropdown-email" class="m3-body-small mt-0.5 truncate" style="color: var(--on-primary-container-color); opacity: 0.8;">Loading...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Menu Items -->
+                                <div class="space-y-1">
+                                    <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
+                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                        </div>
+                                        <span>Profile Settings</span>
+                                    </a>
+                                    <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
+                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--secondary-container-color);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
+                                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </div>
+                                        <span>Broker Settings</span>
+                                    </a>
+                                </div>
+                                
+                                <div class="my-3" style="border-top: 1px solid var(--outline-variant-color);"></div>
+                                
+                                <!-- Logout Button -->
+                                <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02] w-full text-left" style="color: var(--error-color); background-color: transparent;" onmouseover="this.style.backgroundColor='rgba(var(--error-rgb, 220, 53, 69), 0.1)'" onmouseout="this.style.backgroundColor='transparent'">
+                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: rgba(var(--error-rgb, 220, 53, 69), 0.15);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--error-color);">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                            <polyline points="16 17 21 12 16 7"></polyline>
+                                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                                        </svg>
+                                    </div>
+                                    <span class="font-semibold">Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 md:px-6 py-8">
+        <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
+            <!-- Sidebar Navigation -->
+            <aside class="w-full lg:w-64 flex-shrink-0">
+                <div class="m3-card p-4 sticky top-24">
+                    <nav class="space-y-1">
+                        <a href="#profile-section" class="sidebar-link active flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors" data-section="profile-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span class="m3-label-large">Profile</span>
+                        </a>
+                        <a href="#broker-section" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors" data-section="broker-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span class="m3-label-large">Connect with Broker</span>
+                        </a>
+                        <a href="#notifications-section" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors" data-section="notifications-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                            <span class="m3-label-large">Notifications</span>
+                        </a>
+                        <a href="#shared-codes-section" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors" data-section="shared-codes-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span class="m3-label-large">Manage Shared Codes</span>
+                        </a>
+                        <a href="#invoices-section" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors" data-section="invoices-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span class="m3-label-large">Invoices</span>
+                        </a>
+                        <a href="#support-section" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors" data-section="support-section">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            <span class="m3-label-large">Customer Support</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="flex-1">
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <h1 class="m3-headline-large font-bold mb-2">My Profile</h1>
+                    <p class="m3-body-large" style="color: var(--on-surface-variant-color);">Manage your account information and credentials</p>
+                </div>
+
+                <!-- Profile Section -->
+                <section id="profile-section" class="content-section">
+                    <!-- Profile Card -->
+                    <div class="m3-card p-8 mb-6">
+            <div class="flex items-center space-x-6 mb-8">
+                <!-- Avatar -->
+                <div class="w-24 h-24 rounded-full flex items-center justify-center text-4xl font-bold" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color);">
+                    <span id="avatar-letter">A</span>
+                </div>
+                
+                <!-- User Info -->
+                <div class="flex-grow">
+                    <h2 id="profile-email" class="m3-headline-medium mb-2" style="color: var(--on-surface-color);">Loading...</h2>
+                    <p class="m3-body-medium" style="color: var(--on-surface-variant-color);">Alpha Z Member</p>
+                    <p id="member-since" class="m3-body-small mt-2" style="color: var(--on-surface-variant-color);">Member since: Loading...</p>
+                </div>
+            </div>
+
+            <!-- Account Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
+                    <p class="m3-label-small" style="color: var(--on-surface-variant-color);">Total Strategies</p>
+                    <p id="total-strategies" class="m3-headline-small mt-1" style="color: var(--on-surface-color);">0</p>
+                </div>
+                <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
+                    <p class="m3-label-small" style="color: var(--on-surface-variant-color);">Active Strategies</p>
+                    <p id="active-strategies" class="m3-headline-small mt-1" style="color: var(--on-surface-color);">0</p>
+                </div>
+                <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
+                    <p class="m3-label-small" style="color: var(--on-surface-variant-color);">Account Status</p>
+                    <p class="m3-headline-small mt-1" style="color: #10b981;">Active</p>
+                </div>
+            </div>
+        </div>
+
+            <!-- Account Details Section -->
+        <div class="m3-card p-8 mb-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="m3-title-large" style="color: var(--on-surface-color);">Account Details</h3>
+                <button id="edit-account-btn" class="m3-text-button m3-label-large px-4 py-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-2">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                    Edit
+                </button>
+            </div>
+
+            <div id="account-view" class="space-y-4">
+                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                    <div>
+                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">Email Address</p>
+                        <p id="view-email" class="m3-body-large mt-1" style="color: var(--on-surface-color);">Loading...</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                    <div>
+                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">Password</p>
+                        <p class="m3-body-large mt-1" style="color: var(--on-surface-color);">••••••••</p>
+                    </div>
+                    <button id="change-password-btn" class="m3-text-button m3-label-small px-3 py-1 rounded-full">
+                        Change
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edit Form (Hidden by default) -->
+            <div id="account-edit" class="space-y-4 hidden">
+                <div>
+                    <label for="edit-email" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Email Address</label>
+                    <input type="email" id="edit-email" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" readonly>
+                    <p class="m3-body-small mt-1" style="color: var(--on-surface-variant-color);">Email cannot be changed</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button id="cancel-edit-btn" class="m3-outlined-button m3-label-large px-6 py-3 rounded-full">Cancel</button>
+                    <button id="save-account-btn" class="m3-filled-button m3-label-large px-6 py-3 rounded-full">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+                <!-- Danger Zone (Profile only) -->
+                <div class="m3-card p-8 mt-6" style="border: 2px solid var(--error-color);">
+                    <h3 class="m3-title-large mb-4" style="color: var(--error-color);">Danger Zone</h3>
+                    <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Once you delete your account, there is no going back. Please be certain.</p>
+                    <button id="delete-account-btn" class="m3-outlined-button m3-label-large px-6 py-3 rounded-full" style="border-color: var(--error-color); color: var(--error-color);">
+                        Delete Account
+                    </button>
+                </div>
+
+                </section>
+                <!-- End Profile Section -->
+
+                <!-- Broker Section -->
+                <section id="broker-section" class="content-section hidden">
+                    <div class="m3-card p-8 mb-6">
+                        <h2 class="m3-headline-medium mb-6" style="color: var(--on-surface-color);">Connect with Your Broker</h2>
+                        <p class="m3-body-large mb-6" style="color: var(--on-surface-variant-color);">Configure your broker credentials to start trading with Alpha Z. All credentials are encrypted and stored securely.</p>
+
+                        <div class="space-y-6">
+                            <div class="p-6 rounded-lg" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color);">
+                                <div class="flex items-start space-x-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-1">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    <div>
+                                        <h3 class="m3-title-medium mb-2">Your Data is Secure</h3>
+                                        <p class="m3-body-medium">We use industry-standard encryption to protect your broker credentials. Your data is encrypted at rest and in transit.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="m3-card p-6 hover:shadow-lg transition-shadow">
+                                <div class="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h2 class="m3-headline-small font-semibold mb-2" style="color: var(--on-surface-color);">Broker Credentials</h2>
+                                        <p class="m3-body-medium" style="color: var(--on-surface-variant-color);">Connect your broker account to start automated trading</p>
+                                    </div>
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <form id="profileBrokerForm" class="space-y-6">
+                                    <div>
+                                        <label for="broker-select-profile" class="block m3-label-large mb-2" style="color: var(--on-surface-color);">Select Broker</label>
+                                        <div class="relative">
+                                            <select id="broker-select-profile" class="w-full px-4 py-3 rounded-lg m3-body-large focus:outline-none focus:ring-2 transition-all appearance-none cursor-pointer" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-variant-color);">
+                                                <option value="dhan">Dhan</option>
+                                                <option value="zerodha">Zerodha</option>
+                                                <option value="upstox">Upstox</option>
+                                                <option value="groww">Groww</option>
+                                            </select>
+                                            <div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-surface-variant-color);">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="client-id-profile" class="block m3-label-large mb-2" style="color: var(--on-surface-color);">Client ID</label>
+                                        <input 
+                                            type="text" 
+                                            id="client-id-profile" 
+                                            class="w-full px-4 py-3 rounded-lg font-mono m3-body-medium focus:outline-none focus:ring-2 transition-all" 
+                                            style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-variant-color);"
+                                            placeholder="Enter your client ID"
+                                        >
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <label for="token-id-profile" class="block m3-label-large" style="color: var(--on-surface-color);">Access Token</label>
+                                            <button type="button" id="toggle-token-visibility-profile" class="flex items-center space-x-2 m3-text-button m3-label-small px-3 py-1.5 rounded-full hover:bg-gray-500/10 transition-all" style="color: var(--on-surface-variant-color);" aria-label="Toggle token visibility">
+                                                <svg id="eye-icon-profile" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                                <svg id="eye-off-icon-profile" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                </svg>
+                                                <span id="toggle-text-profile">Show</span>
+                                            </button>
+                                        </div>
+                                        <textarea 
+                                            id="token-id-profile" 
+                                            rows="3" 
+                                            class="w-full px-4 py-3 rounded-lg font-mono m3-body-medium resize-none focus:outline-none focus:ring-2 transition-all" 
+                                            style="background-color: var(--surface-variant-color); color: var(--on-surface-color); word-wrap: break-word; overflow-wrap: break-word; border: 1px solid var(--outline-variant-color);"
+                                            placeholder="Paste your access token here..."
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="flex items-center justify-between pt-4">
+                                        <p class="m3-body-small" style="color: var(--on-surface-variant-color);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-1" style="color: var(--primary-color);">
+                                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                            </svg>
+                                            Your credentials are encrypted and stored securely
+                                        </p>
+                                        <button type="submit" class="m3-filled-button m3-label-large px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-2">
+                                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                <polyline points="7 3 7 8 15 8"></polyline>
+                                            </svg>
+                                            Save Credentials
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="m3-card p-6 mt-6" style="background-color: var(--secondary-container-color);">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: var(--on-secondary-container-color); opacity: 0.2;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="m3-title-medium font-semibold mb-2" style="color: var(--on-secondary-container-color);">Need Help?</h3>
+                                        <p class="m3-body-medium mb-3" style="color: var(--on-secondary-container-color);">Learn how to get your API credentials from your broker's website.</p>
+                                        <a href="#" class="m3-label-large inline-flex items-center hover:underline" style="color: var(--on-secondary-container-color);">
+                                            View Documentation
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1">
+                                                <line x1="7" y1="17" x2="17" y2="7"></line>
+                                                <polyline points="7 7 17 7 17 17"></polyline>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Broker Section -->
+
+                <!-- Notifications Section -->
+                <section id="notifications-section" class="content-section hidden">
+                    <div class="m3-card p-8 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="m3-headline-medium" style="color: var(--on-surface-color);">Notifications</h2>
+                            <button class="m3-text-button m3-label-large px-4 py-2 rounded-full">Mark all as read</button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Notification Items -->
+                            <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="m3-title-medium mb-1" style="color: var(--on-surface-color);">Welcome to Alpha Z!</h3>
+                                            <p class="m3-body-medium mb-2" style="color: var(--on-surface-variant-color);">Get started by configuring your broker credentials in Settings.</p>
+                                            <p class="m3-body-small" style="color: var(--on-surface-variant-color);">Just now</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center py-12">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4" style="color: var(--on-surface-variant-color);">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                                <p class="m3-body-large" style="color: var(--on-surface-variant-color);">You're all caught up!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Notifications Section -->
+
+                <!-- Shared Codes Section -->
+                <section id="shared-codes-section" class="content-section hidden">
+                    <div class="m3-card p-8 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="m3-headline-medium" style="color: var(--on-surface-color);">Manage Shared Codes</h2>
+                            <button class="m3-filled-button m3-label-large px-4 py-2 rounded-full">Share New Code</button>
+                        </div>
+
+                        <p class="m3-body-large mb-6" style="color: var(--on-surface-variant-color);">Share your trading strategies with the community or collaborate with other traders.</p>
+
+                        <div class="text-center py-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4" style="color: var(--on-surface-variant-color);">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <p class="m3-headline-small mb-2" style="color: var(--on-surface-color);">No Shared Codes Yet</p>
+                            <p class="m3-body-medium mb-6" style="color: var(--on-surface-variant-color);">Start sharing your strategies with the Alpha Z community.</p>
+                            <button class="m3-tonal-button m3-label-large px-6 py-3 rounded-full">Browse Community Codes</button>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Shared Codes Section -->
+
+                <!-- Invoices Section -->
+                <section id="invoices-section" class="content-section hidden">
+                    <div class="m3-card p-8 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="m3-headline-medium" style="color: var(--on-surface-color);">Invoices & Billing</h2>
+                            <button class="m3-text-button m3-label-large px-4 py-2 rounded-full">Download All</button>
+                        </div>
+
+                        <div class="mb-6 p-4 rounded-lg" style="background-color: var(--tertiary-container-color);">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="m3-label-large" style="color: var(--on-tertiary-container-color);">Current Plan</p>
+                                    <p class="m3-headline-small mt-1" style="color: var(--on-tertiary-container-color);">Free Tier</p>
+                                </div>
+                                <button class="m3-filled-button m3-label-large px-6 py-2 rounded-full">Upgrade</button>
+                            </div>
+                        </div>
+
+                        <div class="text-center py-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4" style="color: var(--on-surface-variant-color);">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <p class="m3-headline-small mb-2" style="color: var(--on-surface-color);">No Invoices Yet</p>
+                            <p class="m3-body-medium" style="color: var(--on-surface-variant-color);">You're currently on the free plan. Upgrade to access premium features.</p>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Invoices Section -->
+
+                <!-- Customer Support Section -->
+                <section id="support-section" class="content-section hidden">
+                    <div class="m3-card p-8 mb-6">
+                        <h2 class="m3-headline-medium mb-6" style="color: var(--on-surface-color);">Customer Support</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <!-- Quick Links -->
+                            <div class="p-6 rounded-lg" style="background-color: var(--surface-variant-color);">
+                                <div class="flex items-center space-x-3 mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    <h3 class="m3-title-large" style="color: var(--on-surface-color);">Help Center</h3>
+                                </div>
+                                <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Browse our comprehensive documentation and FAQs.</p>
+                                <button class="m3-text-button m3-label-large">Visit Help Center →</button>
+                            </div>
+
+                            <div class="p-6 rounded-lg" style="background-color: var(--surface-variant-color);">
+                                <div class="flex items-center space-x-3 mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <h3 class="m3-title-large" style="color: var(--on-surface-color);">Live Chat</h3>
+                                </div>
+                                <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Chat with our support team in real-time.</p>
+                                <button class="m3-text-button m3-label-large">Start Chat →</button>
+                            </div>
+                        </div>
+
+                        <!-- Contact Form -->
+                        <div class="p-6 rounded-lg" style="background-color: var(--surface-variant-color);">
+                            <h3 class="m3-title-large mb-4" style="color: var(--on-surface-color);">Send us a Message</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Subject</label>
+                                    <input type="text" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="How can we help?">
+                                </div>
+                                <div>
+                                    <label class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Message</label>
+                                    <textarea rows="4" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Describe your issue or question..."></textarea>
+                                </div>
+                                <button class="m3-filled-button m3-label-large px-6 py-3 rounded-full">Send Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- End Support Section -->
+
+            <!-- End Main Content Area -->
+        </div>
+        <!-- End Flex Container -->
+
+        <!-- Change Password Modal -->
+        <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="m3-card p-8 max-w-md w-full mx-4">
+                <h3 class="m3-title-large mb-6" style="color: var(--on-surface-color);">Change Password</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="current-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Current Password</label>
+                        <input type="password" id="current-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Enter current password">
+                    </div>
+                    <div>
+                        <label for="new-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">New Password</label>
+                        <input type="password" id="new-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Enter new password">
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Confirm New Password</label>
+                        <input type="password" id="confirm-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Confirm new password">
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-6">
+                    <button id="cancel-password-btn" class="m3-outlined-button m3-label-large px-6 py-3 rounded-full flex-1">Cancel</button>
+                    <button id="submit-password-btn" class="m3-filled-button m3-label-large px-6 py-3 rounded-full flex-1">Update Password</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/profile.js"></script>
+</body>
+</html>

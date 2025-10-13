@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    // Update account icon with user's email initial
+    await updateAccountIcon();
+
     // Get all the elements we need to update
     const netWorthEl = document.getElementById('net-worth');
     const pnlEl = document.getElementById('pnl');
@@ -77,4 +80,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         statusTextEl.textContent = 'Client Error';
     }
 });
+
+// Function to update account icon with user's email initial
+async function updateAccountIcon() {
+    try {
+        const profile = await getUserProfile();
+        if (profile && profile.email) {
+            const email = profile.email;
+            const avatarLetter = email.charAt(0).toUpperCase();
+            
+            // Update the button icon
+            const accountIcon = document.getElementById('account-icon');
+            if (accountIcon) {
+                accountIcon.textContent = avatarLetter;
+            }
+            
+            // Update dropdown email
+            const dropdownEmail = document.getElementById('dropdown-email');
+            if (dropdownEmail) {
+                dropdownEmail.textContent = email;
+            }
+            
+            // Update dropdown avatar text
+            const dropdownAvatarText = document.getElementById('dropdown-avatar-text');
+            if (dropdownAvatarText) {
+                dropdownAvatarText.textContent = avatarLetter;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating account icon:', error);
+    }
+}
 

@@ -1,33 +1,4 @@
-/* Terminal Page Styles */
-
-/* JetBrains Mono Font */
-.font-mono {
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/* Custom Scrollbar Styles */
-#code-editor::-webkit-scrollbar,
-#logs::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-#code-editor::-webkit-scrollbar-track,
-#logs::-webkit-scrollbar-track {
-    background: var(--surface-variant-color);
-    border-radius: 4px;
-}
-
-#code-editor::-webkit-scrollbar-thumb,
-#logs::-webkit-scrollbar-thumb {
-    background: var(--outline-color);
-    border-radius: 4px;
-}
-
-#code-editor::-webkit-scrollbar-thumb:hover,
-#logs::-webkit-scrollbar-thumb:hover {
-    background: var(--outline-variant-color);
-}
+/* Profile Page Styles */
 
 /* Account Dropdown Animation */
 @keyframes fadeIn {
@@ -57,4 +28,32 @@
     border-top: 2px solid var(--outline-color);
     transform: rotate(45deg);
     z-index: -1;
+}
+
+.sidebar-link {
+    color: var(--on-surface-color);
+}
+
+.sidebar-link:hover {
+    background-color: var(--surface-variant-color);
+}
+
+.sidebar-link.active {
+    background-color: var(--secondary-container-color);
+    color: var(--on-secondary-container-color);
+}
+
+.content-section {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

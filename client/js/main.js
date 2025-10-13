@@ -46,10 +46,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const isDark = htmlElement.classList.toggle('dark');
             const newTheme = isDark ? 'dark' : 'light';
             
+            
             // Save the user's preference for future visits.
             localStorage.setItem('theme', newTheme);
             applyTheme(newTheme);
         });
     }
 
+    // --- Account Dropdown Logic ---
+    const accountButton = document.getElementById('account-button');
+    const accountDropdown = document.getElementById('account-dropdown');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (accountButton && accountDropdown) {
+        // Toggle dropdown on button click
+        accountButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            accountDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!accountButton.contains(e.target) && !accountDropdown.contains(e.target)) {
+                accountDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    // --- Logout Button Logic ---
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // Clear the authentication token
+            localStorage.removeItem('token');
+            // Redirect to the login page
+            window.location.href = 'login.html';
+        });
+    }
+
 });
+

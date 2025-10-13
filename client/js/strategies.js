@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Update account icon with user's email initial
+    await updateAccountIcon();
+
     const strategiesContainer = document.getElementById('strategies-container');
     let logViewerModal = null; // This will hold the modal element after it's loaded
 
@@ -139,3 +142,33 @@ document.addEventListener('DOMContentLoaded', () => {
     loadStrategies();
 });
 
+// Function to update account icon with user's email initial
+async function updateAccountIcon() {
+    try {
+        const profile = await getUserProfile();
+        if (profile && profile.email) {
+            const email = profile.email;
+            const avatarLetter = email.charAt(0).toUpperCase();
+            
+            // Update the button icon
+            const accountIcon = document.getElementById('account-icon');
+            if (accountIcon) {
+                accountIcon.textContent = avatarLetter;
+            }
+            
+            // Update dropdown email
+            const dropdownEmail = document.getElementById('dropdown-email');
+            if (dropdownEmail) {
+                dropdownEmail.textContent = email;
+            }
+            
+            // Update dropdown avatar text
+            const dropdownAvatarText = document.getElementById('dropdown-avatar-text');
+            if (dropdownAvatarText) {
+                dropdownAvatarText.textContent = avatarLetter;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating account icon:', error);
+    }
+}
