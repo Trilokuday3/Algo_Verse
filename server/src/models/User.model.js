@@ -1,73 +1,49 @@
 const mongoose = require('mongoose');
+const { getConnections } = require('../config/db');
 
-// This defines the structure for a single saved strategy.
-// It is used as a "sub-document" within the main user schema.
-const strategySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    code: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ['Stopped', 'Running', 'Paused'], // The status can only be one of these three values.
-        default: 'Stopped' // New strategies will always default to 'Stopped'.
-    },
-    // In a real multi-run system, you would store the container ID here to manage the process.
-    containerId: { 
-        type: String, 
-        default: null 
-    } 
-});
-
-// This is the main blueprint for a user in your database.
+// This is the user schema for authentication and profile information only
 const userSchema = new mongoose.Schema({
     // Core user authentication fields
     email: {
         type: String,
         required: true,
-        unique: true, // No two users can have the same email.
-        lowercase: true // Store emails in lowercase to avoid case-sensitivity issues.
+        unique: true,
+        lowercase: true
     },
     password: {
         type: String,
-        required: true // This will store the securely hashed password.
+        required: true
     },
     
-    // Encrypted credentials for running strategies
-    clientId: { 
-        type: String, 
-        default: '' 
+    // Profile information
+    firstName: {
+        type: String,
+        default: '',
+        trim: true
     },
-    accessToken: { 
-        type: String, 
-        default: '' 
+    lastName: {
+        type: String,
+        default: '',
+        trim: true
     },
-    
-    // Encrypted credentials for the automated daily login feature
-    brokerUsername: { 
-        type: String, 
-        default: '' 
-    },
-    brokerPassword: { 
-        type: String, 
-        default: '' 
-    },
-    totpSecret: { 
-        type: String, 
-        default: '' 
-    },
-
-    // An array that will hold all of the user's saved strategies.
-    strategies: [strategySchema]
+    phone: {
+        type: String,
+        default: '',
+        trim: true
+    }
+}, {
+    timestamps: true // Adds createdAt and updatedAt automatically
 });
 
-// Create the model from the schema, which allows us to interact with the 'users' collection in MongoDB.
-const User = mongoose.model('User', userSchema);
+// Function to get User model with the correct connection
+const getUserModel = () => {
+    const { userConnection } = getConnections();
+    if (!userConnection) {
+        throw new Error('User database connection not established');
+    }
+    return userConnection.model('User', userSchema);
+};
 
-module.exports = User;
+module.exports = getUserModel;
+
 

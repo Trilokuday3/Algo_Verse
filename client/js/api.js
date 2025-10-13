@@ -318,6 +318,29 @@ async function getUserProfile() {
 }
 
 /**
+ * Updates the user's profile information.
+ * @param {Object} profileData - Object containing firstName, lastName, phone, etc.
+ * @returns {Promise<Object>} The server's response.
+ */
+async function updateUserProfile(profileData) {
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(profileData)
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Update user profile request failed:", error);
+        return { success: false, message: "Could not connect to the server." };
+    }
+}
+
+/**
  * Changes the user's password.
  * @param {string} currentPassword - The current password.
  * @param {string} newPassword - The new password.

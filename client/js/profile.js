@@ -83,12 +83,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Save account button (currently email is readonly, so this is a placeholder)
+    // Save account button
     if (saveAccountBtn) {
         saveAccountBtn.addEventListener('click', async () => {
-            alert('Account details saved! (Email cannot be changed)');
-            accountEdit.classList.add('hidden');
-            accountView.classList.remove('hidden');
+            try {
+                const firstName = document.getElementById('edit-firstname').value.trim();
+                const lastName = document.getElementById('edit-lastname').value.trim();
+                const phone = document.getElementById('edit-phone').value.trim();
+                
+                // Update profile with new data
+                const result = await updateUserProfile({
+                    firstName: firstName || undefined,
+                    lastName: lastName || undefined,
+                    phone: phone || undefined
+                });
+                
+                if (result.success) {
+                    // Update the view with new values
+                    document.getElementById('view-firstname').textContent = firstName || 'Not set';
+                    document.getElementById('view-lastname').textContent = lastName || 'Not set';
+                    document.getElementById('view-phone').textContent = phone || 'Not set';
+                    
+                    alert('Profile updated successfully!');
+                    accountEdit.classList.add('hidden');
+                    accountView.classList.remove('hidden');
+                } else {
+                    alert(result.message || 'Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile. Please try again.');
+            }
         });
     }
 
@@ -182,10 +207,22 @@ async function loadProfile() {
         if (profile) {
             // Update profile information
             const email = profile.email || 'user@example.com';
+            const firstName = profile.firstName || 'Not set';
+            const lastName = profile.lastName || 'Not set';
+            const phone = profile.phone || 'Not set';
+            
             document.getElementById('profile-email').textContent = email;
             document.getElementById('view-email').textContent = email;
             document.getElementById('edit-email').value = email;
             document.getElementById('dropdown-email').textContent = email;
+            
+            // Update first name, last name, phone
+            document.getElementById('view-firstname').textContent = firstName;
+            document.getElementById('view-lastname').textContent = lastName;
+            document.getElementById('view-phone').textContent = phone;
+            document.getElementById('edit-firstname').value = firstName === 'Not set' ? '' : firstName;
+            document.getElementById('edit-lastname').value = lastName === 'Not set' ? '' : lastName;
+            document.getElementById('edit-phone').value = phone === 'Not set' ? '' : phone;
             
             // Update avatar
             const avatarLetter = email.charAt(0).toUpperCase();
@@ -218,6 +255,9 @@ async function loadProfile() {
         // Use default/fallback values
         document.getElementById('profile-email').textContent = 'Error loading profile';
         document.getElementById('view-email').textContent = 'Error loading profile';
+        document.getElementById('view-firstname').textContent = 'Error loading';
+        document.getElementById('view-lastname').textContent = 'Error loading';
+        document.getElementById('view-phone').textContent = 'Error loading';
     }
 }
 
