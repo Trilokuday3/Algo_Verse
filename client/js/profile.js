@@ -6,20 +6,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sidebarLinks = document.querySelectorAll('.sidebar-link');
     const contentSections = document.querySelectorAll('.content-section');
     
+    // Function to show a specific section
+    function showSection(sectionId) {
+        // Hide all sections
+        contentSections.forEach(section => section.classList.add('hidden'));
+        
+        // Show target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.remove('hidden');
+        }
+        
+        // Update active link
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        const activeLink = document.querySelector(`.sidebar-link[data-section="${sectionId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
+    
+    // Check for hash on page load
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1); // Remove the # symbol
+        showSection(hash);
+    } else {
+        // Show profile section by default
+        showSection('profile-section');
+    }
+    
+    // Handle hash changes (for navigation within the page)
+    window.addEventListener('hashchange', () => {
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1);
+            showSection(hash);
+        }
+    });
+    
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetSection = link.getAttribute('data-section');
             
-            // Remove active class from all links
-            sidebarLinks.forEach(l => l.classList.remove('active'));
-            // Add active class to clicked link
-            link.classList.add('active');
+            // Update URL hash
+            window.location.hash = targetSection;
             
-            // Hide all sections
-            contentSections.forEach(section => section.classList.add('hidden'));
-            // Show target section
-            document.getElementById(targetSection).classList.remove('hidden');
+            // Show the section
+            showSection(targetSection);
         });
     });
 

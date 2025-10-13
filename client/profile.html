@@ -82,7 +82,7 @@
                 <a href="dashboard.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Dashboard</a>
                 <a href="strategies.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">My Strategies</a>
                 <a href="terminal.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Terminal</a>
-                <a href="settings.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Broker Connection</a>
+                <a href="profile.html#broker-section" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Broker Connection</a>
             </div>
 
             <!-- Actions -->
@@ -136,7 +136,7 @@
                                         </div>
                                         <span>Profile Settings</span>
                                     </a>
-                                    <a href="settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
+                                    <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
                                         <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--secondary-container-color);">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
                                                 <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
@@ -169,7 +169,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 md:px-6 py-8">
+    <main class="container mx-auto px-4 md:px-6 pt-8 pb-0">
         <div class="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
             <!-- Sidebar Navigation -->
             <aside class="w-full lg:w-64 flex-shrink-0">
@@ -311,6 +311,15 @@
                     <button id="save-account-btn" class="m3-filled-button m3-label-large px-6 py-3 rounded-full">Save Changes</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Danger Zone (only in profile section) -->
+        <div class="m3-card p-8" style="border: 2px solid var(--error-color);">
+            <h3 class="m3-title-large mb-4" style="color: var(--error-color);">Danger Zone</h3>
+            <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Once you delete your account, there is no going back. Please be certain.</p>
+            <button id="delete-account-btn" class="m3-outlined-button m3-label-large px-6 py-3 rounded-full" style="border-color: var(--error-color); color: var(--error-color);">
+                Delete Account
+            </button>
         </div>
                 </section>
                 <!-- End Profile Section -->
@@ -570,44 +579,6 @@
                     </div>
                 </section>
                 <!-- End Support Section -->
-
-                <!-- Danger Zone (shown in all sections) -->
-                <div class="m3-card p-8" style="border: 2px solid var(--error-color);">
-        <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-            <div class="m3-card p-8 max-w-md w-full mx-4">
-                <h3 class="m3-title-large mb-6" style="color: var(--on-surface-color);">Change Password</h3>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label for="current-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Current Password</label>
-                        <input type="password" id="current-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Enter current password">
-                    </div>
-                    <div>
-                        <label for="new-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">New Password</label>
-                        <input type="password" id="new-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Enter new password">
-                    </div>
-                    <div>
-                        <label for="confirm-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Confirm New Password</label>
-                        <input type="password" id="confirm-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Confirm new password">
-                    </div>
-                </div>
-
-                <div class="flex space-x-3 mt-6">
-                    <button id="cancel-password-btn" class="m3-outlined-button m3-label-large px-6 py-3 rounded-full flex-1">Cancel</button>
-                    <button id="submit-password-btn" class="m3-filled-button m3-label-large px-6 py-3 rounded-full flex-1">Update Password</button>
-                </div>
-            </div>
-        </div>
-                <!-- End Support Section -->
-
-                <!-- Danger Zone (shown in all sections) -->
-                <div class="m3-card p-8" style="border: 2px solid var(--error-color);">
-                    <h3 class="m3-title-large mb-4" style="color: var(--error-color);">Danger Zone</h3>
-                    <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Once you delete your account, there is no going back. Please be certain.</p>
-                    <button id="delete-account-btn" class="m3-outlined-button m3-label-large px-6 py-3 rounded-full" style="border-color: var(--error-color); color: var(--error-color);">
-                        Delete Account
-                    </button>
-                </div>
             </div>
             <!-- End Main Content Area -->
         </div>
