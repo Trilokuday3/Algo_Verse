@@ -17,11 +17,36 @@ const getAllStrategies = async (req, res) => {
 
 // Create new strategy
 const createStrategy = async (req, res) => {
-    const { name, code } = req.body;
+    const { name, code, broker } = req.body;
     
     try {
         if (!name || !code) {
             return res.status(400).json({ message: 'Strategy name and code are required.' });
+        }
+        
+        if (!broker) {
+            return res.status(400).json({ message: 'Broker selection is required.' });
+        }
+        
+        // Validate broker
+        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone'];
+        if (!allowedBrokers.includes(broker.toLowerCase())) {
+            return res.status(400).json({ 
+                message: `Invalid broker. Allowed: ${allowedBrokers.join(', ')}` 
+            });
+        }
+        
+        // Check if user has credentials for this broker
+        const Credentials = getCredentialsModel();
+        const credentials = await Credentials.findOne({ 
+            userId: req.userId, 
+            broker: broker.toLowerCase() 
+        });
+        
+        if (!credentials) {
+            return res.status(400).json({ 
+                message: `No credentials found for ${broker}. Please add credentials first.` 
+            });
         }
         
         const Strategy = getStrategyModel();
@@ -35,7 +60,8 @@ const createStrategy = async (req, res) => {
         const strategy = new Strategy({
             userId: req.userId,
             name,
-            code
+            code,
+            broker: broker.toLowerCase()
         });
         
         await strategy.save();
@@ -73,7 +99,11 @@ const getStrategy = async (req, res) => {
 
 // Update strategy
 const updateStrategy = async (req, res) => {
-    const { name, code } = req.body;
+    const { name, code, broker } = req.body;
+    
+    console.log('=== UPDATE STRATEGY ===');
+    console.log('Received broker:', broker);
+    console.log('Received name:', name);
     
     try {
         const Strategy = getStrategyModel();
@@ -85,6 +115,9 @@ const updateStrategy = async (req, res) => {
         if (!strategy) {
             return res.status(404).json({ message: 'Strategy not found.' });
         }
+
+        console.log('Current strategy broker:', strategy.broker);
+        console.log('Broker comparison:', broker, '!==', strategy.broker, '=', broker !== strategy.broker);
 
         // Check if another strategy with the new name already exists
         if (name && name !== strategy.name) {
@@ -99,11 +132,38 @@ const updateStrategy = async (req, res) => {
             }
         }
         
+        // If changing broker, verify credentials exist (use case-insensitive comparison)
+        if (broker && broker.toLowerCase() !== strategy.broker.toLowerCase()) {
+            console.log('Broker is changing from', strategy.broker, 'to', broker);
+            
+            const Credentials = getCredentialsModel();
+            const credentials = await Credentials.findOne({ 
+                userId: req.userId, 
+                broker: broker.toLowerCase() 
+            });
+            
+            if (!credentials) {
+                console.log('No credentials found for broker:', broker);
+                return res.status(400).json({ 
+                    message: `No credentials found for ${broker}. Please add credentials first.` 
+                });
+            }
+            
+            console.log('Credentials found, updating broker to:', broker.toLowerCase());
+            strategy.broker = broker.toLowerCase();
+        } else if (broker) {
+            console.log('Broker not changing (same broker selected)');
+            // Still update the broker field to ensure consistency
+            strategy.broker = broker.toLowerCase();
+        }
+        
         if (name) strategy.name = name;
         if (code) strategy.code = code;
         
+        console.log('Saving strategy with broker:', strategy.broker);
         await strategy.save();
         
+        console.log('Strategy saved. Final broker:', strategy.broker);
         res.json({ message: 'Strategy updated successfully!', strategy });
     } catch (error) {
         console.error("Update strategy error:", error);
@@ -155,21 +215,34 @@ const startStrategy = async (req, res) => {
             return res.status(404).json({ message: 'Strategy not found.' });
         }
         
-        // Get credentials
-        const credentials = await Credentials.findOne({ userId: req.userId });
-        if (!credentials || !credentials.clientId || !credentials.accessToken) {
-            return res.status(400).json({ message: 'Please set your broker credentials first.' });
+        // Get credentials for the broker associated with this strategy
+        const credentials = await Credentials.findOne({ 
+            userId: req.userId,
+            broker: strategy.broker 
+        });
+        
+        if (!credentials) {
+            return res.status(400).json({ 
+                message: `No credentials found for ${strategy.broker}. Please add ${strategy.broker} credentials first.` 
+            });
+        }
+        
+        if (!credentials.clientId || !credentials.accessToken) {
+            return res.status(400).json({ 
+                message: `Incomplete credentials for ${strategy.broker}. Please update your credentials.` 
+            });
         }
         
         const decryptedClientId = decrypt(credentials.clientId);
         const decryptedAccessToken = decrypt(credentials.accessToken);
         
-        // Start Docker container
+        // Start Docker container with broker-specific credentials
         const containerId = await dockerService.runStrategy(
             strategy.code,
             decryptedClientId,
             decryptedAccessToken,
-            strategy.name
+            strategy.name,
+            strategy.broker  // Pass broker info to docker service
         );
         
         strategy.status = 'Running';

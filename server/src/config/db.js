@@ -17,16 +17,23 @@ const connectDB = async () => {
             throw new Error('Missing MongoDB connection URIs in .env file. Please set MONGO_USER_URI, MONGO_STRATEGY_URI, and MONGO_CREDENTIALS_URI');
         }
         
+        // MongoDB connection options to fix SSL/TLS issues with Node.js v24
+        // Use minimal TLS version to ensure compatibility
+        const connectionOptions = {
+            serverSelectionTimeoutMS: 30000,
+            socketTimeoutMS: 75000,
+        };
+        
         // Connect to user database
-        userConnection = await mongoose.createConnection(MONGO_USER_URI);
+        userConnection = await mongoose.createConnection(MONGO_USER_URI, connectionOptions);
         console.log("✓ User Database (user_db) connected successfully.");
         
         // Connect to strategy database
-        strategyConnection = await mongoose.createConnection(MONGO_STRATEGY_URI);
+        strategyConnection = await mongoose.createConnection(MONGO_STRATEGY_URI, connectionOptions);
         console.log("✓ Strategy Database (strategy_db) connected successfully.");
         
         // Connect to credentials database
-        credentialsConnection = await mongoose.createConnection(MONGO_CREDENTIALS_URI);
+        credentialsConnection = await mongoose.createConnection(MONGO_CREDENTIALS_URI, connectionOptions);
         console.log("✓ Credentials Database (credentials_db) connected successfully.");
         
         console.log("🚀 All MongoDB databases connected successfully.");

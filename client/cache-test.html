@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache Test - Broker Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        .error {
+            border-color: #f44336;
+            background: #fef1f1;
+        }
+        button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0b7dda;
+        }
+        .code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            margin-top: 30px;
+        }
+        .status {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .status.good {
+            color: #4caf50;
+        }
+        .status.bad {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Broker Messages - Cache Test</h1>
+    <p>This page helps verify if your browser is loading the new code with broker change messages.</p>
+
+    <div class="test-box">
+        <h2>📁 Step 1: Check if terminal.js has the new code</h2>
+        <button onclick="checkTerminalJS()">Check terminal.js</button>
+        <div id="terminal-check-result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>🔄 Step 2: Clear Browser Cache</h2>
+        <p><strong>Windows:</strong> Press <code>Ctrl + Shift + Delete</code></p>
+        <p><strong>Quick method:</strong> Press <code>Ctrl + Shift + R</code> (Hard Refresh)</p>
+        <p><strong>Best method:</strong> Open in Incognito: <code>Ctrl + Shift + N</code></p>
+        <button onclick="window.location.reload(true)">Hard Reload This Page</button>
+    </div>
+
+    <div class="test-box">
+        <h2>✅ Step 3: Verify the code is loaded</h2>
+        <button onclick="testBrokerChangeMessage()">Test Broker Change Message</button>
+        <button onclick="testNewStrategyMessage()">Test New Strategy Message</button>
+        <div id="test-result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>📊 Cache Status</h2>
+        <div id="cache-status"></div>
+        <p><strong>File timestamp:</strong> <span id="file-timestamp"></span></p>
+        <p><strong>Cache test:</strong> <span id="cache-test"></span></p>
+    </div>
+
+    <div class="test-box">
+        <h2>🎯 Quick Fix Guide</h2>
+        <ol>
+            <li>Close all browser tabs</li>
+            <li>Press <code>Ctrl + Shift + Delete</code></li>
+            <li>Select "Cached images and files"</li>
+            <li>Click "Clear data"</li>
+            <li>Open in Incognito: <code>Ctrl + Shift + N</code></li>
+            <li>Go to: <code>http://localhost:3000</code></li>
+            <li>Test editing a strategy</li>
+        </ol>
+    </div>
+
+    <script>
+        // Check if terminal.js has the new code
+        async function checkTerminalJS() {
+            const resultDiv = document.getElementById('terminal-check-result');
+            resultDiv.innerHTML = '<p>Checking...</p>';
+            
+            try {
+                // Fetch with cache-busting
+                const response = await fetch(`/js/terminal.js?t=${Date.now()}`);
+                const code = await response.text();
+                
+                // Check for the new code patterns
+                const hasBrokerChangeMessage = code.includes('Your broker has been changed from');
+                const hasNewStrategyMessage = code.includes('Strategy saved successfully with broker:');
+                const hasBrokerChangingCheck = code.includes('const isBrokerChanging');
+                const hasOldBrokerVariable = code.includes('const oldBroker = currentStrategy.broker');
+                
+                let html = '<div class="code">';
+                html += `<p>✓ "Your broker has been changed from": <span class="status ${hasBrokerChangeMessage ? 'good' : 'bad'}">${hasBrokerChangeMessage ? 'FOUND ✅' : 'NOT FOUND ❌'}</span></p>`;
+                html += `<p>✓ "Strategy saved successfully with broker:": <span class="status ${hasNewStrategyMessage ? 'good' : 'bad'}">${hasNewStrategyMessage ? 'FOUND ✅' : 'NOT FOUND ❌'}</span></p>`;
+                html += `<p>✓ "const isBrokerChanging": <span class="status ${hasBrokerChangingCheck ? 'good' : 'bad'}">${hasBrokerChangingCheck ? 'FOUND ✅' : 'NOT FOUND ❌'}</span></p>`;
+                html += `<p>✓ "const oldBroker": <span class="status ${hasOldBrokerVariable ? 'good' : 'bad'}">${hasOldBrokerVariable ? 'FOUND ✅' : 'NOT FOUND ❌'}</span></p>`;
+                html += '</div>';
+                
+                const allFound = hasBrokerChangeMessage && hasNewStrategyMessage && hasBrokerChangingCheck && hasOldBrokerVariable;
+                
+                if (allFound) {
+                    resultDiv.innerHTML = '<div class="test-box success">' + html + '<p class="status good">✅ All new code found! File is correct.</p></div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="test-box error">' + html + '<p class="status bad">❌ Some code missing! Browser might be caching old file.</p><p><strong>Solution: Clear cache and try again!</strong></p></div>';
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-box error"><p class="status bad">❌ Error: ${error.message}</p></div>`;
+            }
+        }
+
+        // Test the broker change message function
+        function testBrokerChangeMessage() {
+            const resultDiv = document.getElementById('test-result');
+            
+            // Simulate broker change
+            const oldBroker = 'dhan';
+            const newBroker = 'zerodha';
+            const brokerNames = {
+                'dhan': 'Dhan',
+                'zerodha': 'Zerodha',
+                'upstox': 'Upstox',
+                'angelone': 'Angel One'
+            };
+            
+            const isBrokerChanging = newBroker.toLowerCase() !== oldBroker.toLowerCase();
+            
+            if (isBrokerChanging) {
+                const message = `✅ Your broker has been changed from ${brokerNames[oldBroker]} to ${brokerNames[newBroker]} for this strategy!\n\nStrategy updated successfully!`;
+                alert(message);
+                resultDiv.innerHTML = '<div class="test-box success"><p class="status good">✅ Test passed! This is what you should see when changing broker.</p></div>';
+            } else {
+                resultDiv.innerHTML = '<div class="test-box error"><p class="status bad">❌ Test failed! Broker change not detected.</p></div>';
+            }
+        }
+
+        // Test the new strategy message function
+        function testNewStrategyMessage() {
+            const resultDiv = document.getElementById('test-result');
+            
+            const broker = 'dhan';
+            const brokerNames = {
+                'dhan': 'Dhan',
+                'zerodha': 'Zerodha',
+                'upstox': 'Upstox',
+                'angelone': 'Angel One'
+            };
+            
+            const message = `✅ Strategy saved successfully with broker: ${brokerNames[broker]}!\n\nStrategy saved successfully!`;
+            alert(message);
+            resultDiv.innerHTML = '<div class="test-box success"><p class="status good">✅ Test passed! This is what you should see when saving new strategy.</p></div>';
+        }
+
+        // Check cache status
+        function checkCacheStatus() {
+            const cacheStatusDiv = document.getElementById('cache-status');
+            const timestampDiv = document.getElementById('file-timestamp');
+            const cacheTestDiv = document.getElementById('cache-test');
+            
+            // Show current timestamp
+            timestampDiv.textContent = new Date().toISOString();
+            
+            // Check if terminal.js is being cached
+            const script = document.querySelector('script[src*="terminal.js"]');
+            if (script) {
+                const src = script.getAttribute('src');
+                if (src.includes('?') || src.includes('&')) {
+                    cacheTestDiv.innerHTML = '<span class="status good">✅ Cache-busting parameter detected</span>';
+                } else {
+                    cacheTestDiv.innerHTML = '<span class="status bad">❌ No cache-busting parameter</span>';
+                }
+            } else {
+                cacheTestDiv.innerHTML = '<span class="status">ℹ️ terminal.js not loaded on this page</span>';
+            }
+            
+            cacheStatusDiv.innerHTML = `
+                <p><strong>Cache headers:</strong> Check Network tab in DevTools (F12)</p>
+                <p><strong>Recommended:</strong> Use Incognito mode for testing</p>
+            `;
+        }
+
+        // Run cache status check on load
+        window.onload = function() {
+            checkCacheStatus();
+            // Auto-check terminal.js
+            checkTerminalJS();
+        };
+    </script>
+</body>
+</html>

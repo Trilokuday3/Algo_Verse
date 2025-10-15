@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^1.12.2",
     "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
     "dockerode": "^4.0.8",
     "dotenv": "^17.2.2",
     "express": "^4.19.2"

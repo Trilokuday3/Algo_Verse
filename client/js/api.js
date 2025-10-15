@@ -59,6 +59,24 @@ async function saveCredentials(credentials) {
     }
 }
 
+/**
+ * Fetches all broker credentials for the logged-in user.
+ * @returns {Promise<Array>} A list of the user's broker credentials.
+ */
+async function getCredentials() {
+    try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE_URL}/api/credentials`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) return [];
+        return await response.json();
+    } catch (error) {
+        console.error("Get credentials request failed:", error);
+        return [];
+    }
+}
+
 // =================================================================
 // --- STRATEGY MANAGEMENT ---
 // =================================================================
@@ -70,8 +88,15 @@ async function saveCredentials(credentials) {
 async function getStrategies() {
     try {
         const token = getToken();
-        const response = await fetch(`${API_BASE_URL}/api/strategies`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        const response = await fetch(`${API_BASE_URL}/api/strategies?_t=${timestamp}`, {
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
         });
         if (!response.ok) return [];
         return await response.json();
@@ -89,8 +114,15 @@ async function getStrategies() {
 async function getStrategyById(strategyId) {
     try {
         const token = getToken();
-        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        // Add timestamp to prevent caching
+        const url = `${API_BASE_URL}/api/strategies/${strategyId}?t=${Date.now()}`;
+        const response = await fetch(url, {
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
         });
         if (!response.ok) return null;
         return await response.json();
@@ -106,7 +138,7 @@ async function getStrategyById(strategyId) {
  * @param {string} code - The Python code for the strategy.
  * @returns {Promise<Object>} The server's response.
  */
-async function saveStrategy(name, code) {
+async function saveStrategy(name, code, broker) {
     try {
         const token = getToken();
         const response = await fetch(`${API_BASE_URL}/api/strategies`, {
@@ -115,7 +147,7 @@ async function saveStrategy(name, code) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ name, code }),
+            body: JSON.stringify({ name, code, broker }),
         });
         return await response.json();
     } catch (error) {
@@ -129,9 +161,10 @@ async function saveStrategy(name, code) {
  * @param {string} strategyId - The ID of the strategy to update.
  * @param {string} name - The new name for the strategy.
  * @param {string} code - The new code for the strategy.
+ * @param {string} broker - The broker to use for this strategy.
  * @returns {Promise<Object>} The server's response.
  */
-async function updateStrategy(strategyId, name, code) {
+async function updateStrategy(strategyId, name, code, broker) {
     try {
         const token = getToken();
         const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}`, {
@@ -140,7 +173,7 @@ async function updateStrategy(strategyId, name, code) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ name, code }),
+            body: JSON.stringify({ name, code, broker }),
         });
         return await response.json();
     } catch (error) {
@@ -253,7 +286,7 @@ async function resumeStrategy(strategyId) {
  * @param {string} code - The Python code to run.
  * @returns {Promise<Object>} The server's response with the code output.
  */
-async function runStrategy(code) {
+async function runStrategy(code, broker) {
     try {
         const token = getToken();
         const response = await fetch(`${API_BASE_URL}/api/run`, {
@@ -262,7 +295,7 @@ async function runStrategy(code) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ code }),
+            body: JSON.stringify({ code, broker }),
         });
         return await response.json();
     } catch (error) {

@@ -12,8 +12,8 @@ const credentialsSchema = new mongoose.Schema({
     // Broker selection (required and unique per user)
     broker: {
         type: String,
-        enum: ['dhan', 'zerodha', 'upstox', 'angelone', 'tradehull'],
-        required: true
+        enum: ['dhan', 'zerodha', 'upstox', 'angelone'],
+        required: true,
     },
     
     // Encrypted credentials for running strategies

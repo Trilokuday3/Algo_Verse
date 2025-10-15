@@ -53,12 +53,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         const statusColor = status === 'Running' ? 'bg-green-500' : (status === 'Paused' ? 'bg-yellow-500' : 'bg-gray-500');
         const statusTextColor = status === 'Running' ? 'text-green-500' : (status === 'Paused' ? 'text-yellow-500' : 'text-gray-500');
 
+        // Broker display names
+        const brokerNames = {
+            'dhan': 'Dhan',
+            'zerodha': 'Zerodha',
+            'upstox': 'Upstox',
+            'angelone': 'Angel One'
+        };
+        const brokerDisplayName = brokerNames[strategy.broker] || strategy.broker || 'Unknown';
+
         card.innerHTML = `
             <a href="terminal.html?strategyId=${strategy._id}" class="absolute top-4 right-4 m3-text-button p-2 rounded-full" title="Edit Strategy">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
             </a>
             <div class="flex-grow text-center">
                 <h3 class="m3-title-large mb-2">${strategy.name}</h3>
+                <p class="m3-body-medium mb-3" style="color: var(--on-surface-variant-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-right: 4px;">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    ${brokerDisplayName}
+                </p>
                 <p class="m3-body-large flex items-center justify-center ${statusTextColor}">
                     <span class="w-3 h-3 rounded-full ${statusColor} mr-2"></span>
                     <span>${status}</span>

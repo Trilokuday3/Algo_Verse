@@ -27,7 +27,13 @@ const strategySchema = new mongoose.Schema({
     containerId: {
         type: String,
         default: null
-    }
+    },
+    broker: {
+        type: String,
+        enum: ['dhan', 'zerodha', 'upstox', 'angelone'],
+        required: true,
+        default: 'dhan'
+    },
 }, {
     timestamps: true // Adds createdAt and updatedAt
 });

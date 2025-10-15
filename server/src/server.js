@@ -75,7 +75,7 @@ app.post('/api/credentials', authMiddleware, async (req, res) => {
         }
         
         // Validate broker is one of the allowed brokers
-        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone', 'tradehull'];
+        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone'];
         if (!allowedBrokers.includes(broker.toLowerCase())) {
             return res.status(400).json({ 
                 message: `Invalid broker. Only ${allowedBrokers.join(', ')} are supported.` 
@@ -236,11 +236,18 @@ app.get('/api/strategies/:strategyId', authMiddleware, async (req, res) => {
 });
 
 app.put('/api/strategies/:strategyId', authMiddleware, async (req, res) => {
-    const { name, code } = req.body;
+    const { name, code, broker } = req.body;
+    
+    console.log('=== UPDATE STRATEGY (server.js route) ===');
+    console.log('Received broker:', broker);
+    console.log('Received name:', name);
+    
     try {
         const Strategy = getStrategyModel();
         const strategy = await Strategy.findOne({ _id: req.params.strategyId, userId: req.userId });
         if (!strategy) return res.status(404).json({ message: 'Strategy not found.' });
+
+        console.log('Current strategy broker:', strategy.broker);
 
         // Check if another strategy with the new name already exists
         if (name !== strategy.name) {
@@ -250,10 +257,37 @@ app.put('/api/strategies/:strategyId', authMiddleware, async (req, res) => {
             }
         }
         
+        // Handle broker update
+        if (broker && broker.toLowerCase() !== strategy.broker.toLowerCase()) {
+            console.log('Broker is changing from', strategy.broker, 'to', broker);
+            
+            const Credentials = getCredentialsModel();
+            const credentials = await Credentials.findOne({ 
+                userId: req.userId, 
+                broker: broker.toLowerCase() 
+            });
+            
+            if (!credentials) {
+                console.log('No credentials found for broker:', broker);
+                return res.status(400).json({ 
+                    message: `No credentials found for ${broker}. Please add credentials first.` 
+                });
+            }
+            
+            console.log('Credentials found, updating broker to:', broker.toLowerCase());
+            strategy.broker = broker.toLowerCase();
+        } else if (broker) {
+            console.log('Broker not changing or same broker selected');
+            strategy.broker = broker.toLowerCase();
+        }
+        
         strategy.name = name;
         strategy.code = code;
+        
+        console.log('Saving strategy with broker:', strategy.broker);
         await strategy.save();
         
+        console.log('Strategy saved. Final broker:', strategy.broker);
         res.json({ message: 'Strategy updated successfully!', strategy });
     } catch (error) {
         console.error("Update strategy error:", error);
@@ -350,17 +384,31 @@ app.post('/api/strategies/:strategyId/resume', authMiddleware, async (req, res) 
 // --- Run Code From Terminal (Protected) ---
 app.post('/api/run', authMiddleware, async (req, res) => {
     try {
-        const { code } = req.body;
+        const { code, broker } = req.body;
+        
+        // Validate broker parameter
+        if (!broker) {
+            return res.status(400).json({ output: 'Error: Broker not specified. Please select a broker.' });
+        }
+        
+        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone'];
+        if (!allowedBrokers.includes(broker.toLowerCase())) {
+            return res.status(400).json({ output: 'Error: Invalid broker selected.' });
+        }
+        
         const Credentials = getCredentialsModel();
-        const credentials = await Credentials.findOne({ userId: req.userId });
+        const credentials = await Credentials.findOne({ 
+            userId: req.userId,
+            broker: broker.toLowerCase()
+        });
         
         if (!credentials || !credentials.clientId || !credentials.accessToken) {
-            return res.status(400).json({ output: 'Error: Broker credentials not set.' });
+            return res.status(400).json({ output: `Error: No credentials found for ${broker}. Please add credentials first.` });
         }
         
         const decryptedClientId = decrypt(credentials.clientId);
         const decryptedAccessToken = decrypt(credentials.accessToken);
-        const output = await dockerService.runPythonCode(code, decryptedClientId, decryptedAccessToken);
+        const output = await dockerService.runPythonCode(code, decryptedClientId, decryptedAccessToken, broker.toLowerCase());
         res.json({ output });
     } catch (error) {
         console.error("Run code error:", error);

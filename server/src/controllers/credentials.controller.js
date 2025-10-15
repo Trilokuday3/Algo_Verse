@@ -12,7 +12,7 @@ const saveCredentials = async (req, res) => {
         }
         
         // Validate broker is one of the allowed brokers
-        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone', 'tradehull'];
+        const allowedBrokers = ['dhan', 'zerodha', 'upstox', 'angelone'];
         if (!allowedBrokers.includes(broker.toLowerCase())) {
             return res.status(400).json({ 
                 message: `Invalid broker. Only ${allowedBrokers.join(', ')} are supported.` 

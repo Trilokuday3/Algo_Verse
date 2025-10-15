@@ -308,6 +308,29 @@
         </div>
     </main>
 
+    <!-- Broker Selection Modal -->
+    <div id="broker-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="m3-surface rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl" style="background-color: var(--surface-variant-color);">
+            <h2 id="broker-modal-title" class="m3-headline-small font-bold mb-4">Select Broker</h2>
+            <p id="broker-modal-description" class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">
+                Choose which broker to use for this strategy
+            </p>
+            
+            <div id="broker-options" class="space-y-2 mb-6">
+                <!-- Broker options will be dynamically inserted here -->
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-broker-btn" class="m3-text-button m3-label-large px-4 py-2 rounded-lg hover:bg-gray-500/10 transition-all">
+                    Cancel
+                </button>
+                <button id="confirm-broker-btn" class="m3-filled-button m3-label-large px-4 py-2 rounded-lg transition-all" disabled>
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="./js/main.js"></script>
     <script src="./js/api.js"></script>
