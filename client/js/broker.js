@@ -129,9 +129,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Show the success or error message from the server
             alert(result.message);
 
-            // CORRECTED: If the save was successful, clear the input fields.
-            // Checks for "securely" to match the server's success message.
-            if (result.message.includes('securely')) {
+            // If the save was successful, clear the input fields.
+            if (result.message && result.message.includes('successfully')) {
                 clientIdInput.value = '';
                 tokenTextarea.value = '';
                 actualTokenValue = '';
