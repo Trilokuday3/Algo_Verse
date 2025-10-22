@@ -6,6 +6,9 @@ const userController = require('../controllers/user.controller');
 // Get user profile (with strategies and broker info)
 router.get('/profile', authMiddleware, userController.getProfile);
 
+// Get all broker credentials (for token expiry check)
+router.get('/broker-credentials', authMiddleware, userController.getBrokerCredentials);
+
 // Update user profile information
 router.put('/profile', authMiddleware, userController.updateProfile);
 

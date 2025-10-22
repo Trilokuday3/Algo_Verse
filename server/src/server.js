@@ -15,6 +15,7 @@ const getStrategyModel = require('./models/UserStrategy.model');
 const getCredentialsModel = require('./models/Credentials.model');
 const authMiddleware = require('./middleware/auth.middleware');
 const { encrypt, decrypt } = require('./services/crypto.service');
+const cryptoService = require('./services/crypto.service');
 
 // --- Constants & App Initialization ---
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -314,26 +315,53 @@ app.post('/api/strategies/:strategyId/start', authMiddleware, async (req, res) =
         
         const strategy = await Strategy.findOne({ _id: req.params.strategyId, userId: req.userId });
         if (!strategy) return res.status(404).json({ message: 'Strategy not found.' });
-        if (strategy.containerId) await dockerService.stopStrategyContainer(strategy.containerId);
         
-        // Get credentials from credentials database
-        const credentials = await Credentials.findOne({ userId: req.userId });
+        console.log(`🚀 Starting strategy: ${strategy.name} (ID: ${strategy._id})`);
+        console.log(`Strategy broker: ${strategy.broker}`);
+        
+        if (strategy.containerId) {
+            console.log(`Stopping existing container: ${strategy.containerId}`);
+            await dockerService.stopStrategyContainer(strategy.containerId);
+        }
+        
+        // Get broker from strategy, default to 'dhan'
+        const broker = strategy.broker || 'dhan';
+        
+        // Get credentials for the specific broker
+        const credentials = await Credentials.findOne({ 
+            userId: req.userId,
+            broker: broker
+        });
+        
+        console.log(`Credentials found for broker ${broker}:`, !!credentials);
+        
         if (!credentials || !credentials.clientId || !credentials.accessToken) {
-            return res.status(400).json({ message: 'Please configure your broker credentials first.' });
+            console.error(`Missing credentials for broker: ${broker}`);
+            return res.status(400).json({ 
+                success: false,
+                message: `Please configure your ${broker} broker credentials first in the Profile page.` 
+            });
         }
         
         const decryptedClientId = decrypt(credentials.clientId);
         const decryptedAccessToken = decrypt(credentials.accessToken);
         
+        console.log(`Starting Docker container for strategy...`);
         const containerId = await dockerService.startStrategyContainer(strategy, decryptedClientId, decryptedAccessToken);
+        
         strategy.status = 'Running';
         strategy.containerId = containerId;
         await strategy.save();
         
+        console.log(`✅ Strategy started successfully. Container ID: ${containerId}`);
         res.json({ success: true, message: `${strategy.name} has been started.` });
     } catch (error) {
-        console.error("Error starting strategy:", error);
-        res.status(500).json({ message: 'Error starting strategy.' });
+        console.error("❌ Error starting strategy:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error starting strategy: ' + error.message 
+        });
     }
 });
 
@@ -383,8 +411,13 @@ app.post('/api/strategies/:strategyId/resume', authMiddleware, async (req, res) 
 
 // --- Run Code From Terminal (Protected) ---
 app.post('/api/run', authMiddleware, async (req, res) => {
+    const startTime = Date.now();
+    let terminalOutput = '';
+    let runStatus = 'success';
+    let errorMessage = null;
+    
     try {
-        const { code, broker } = req.body;
+        const { code, broker, strategyName, strategyId } = req.body;
         
         // Validate broker parameter
         if (!broker) {
@@ -409,9 +442,119 @@ app.post('/api/run', authMiddleware, async (req, res) => {
         const decryptedClientId = decrypt(credentials.clientId);
         const decryptedAccessToken = decrypt(credentials.accessToken);
         const output = await dockerService.runPythonCode(code, decryptedClientId, decryptedAccessToken, broker.toLowerCase());
-        res.json({ output });
+        
+        terminalOutput = output;
+        
+        // Save run history to database
+        const { getStrategyRunModel } = require('./models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        const executionTime = Date.now() - startTime;
+        
+        const runHistory = new StrategyRun({
+            userId: req.userId,
+            strategyId: strategyId || null,
+            strategyName: strategyName || 'Unnamed Strategy',
+            broker: broker.toLowerCase(),
+            terminalOutput: output,
+            status: runStatus,
+            executionTime: executionTime
+        });
+        
+        await runHistory.save();
+        
+        res.json({ output, runId: runHistory._id });
     } catch (error) {
         console.error("Run code error:", error);
+        runStatus = 'error';
+        errorMessage = error.message;
+        terminalOutput = `Error: ${error.message}`;
+        
+        // Save error run to history
+        try {
+            const { getStrategyRunModel } = require('./models/StrategyRun.model');
+            const StrategyRun = getStrategyRunModel();
+            const executionTime = Date.now() - startTime;
+            
+            const runHistory = new StrategyRun({
+                userId: req.userId,
+                strategyId: req.body.strategyId || null,
+                strategyName: req.body.strategyName || 'Unnamed Strategy',
+                broker: req.body.broker?.toLowerCase() || 'unknown',
+                terminalOutput: terminalOutput,
+                status: runStatus,
+                executionTime: executionTime,
+                errorMessage: errorMessage
+            });
+            
+            await runHistory.save();
+        } catch (saveError) {
+            console.error("Error saving run history:", saveError);
+        }
+        
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- Get All Run History (Protected) ---
+app.get('/api/strategy/history/all', authMiddleware, async (req, res) => {
+    try {
+        const { getStrategyRunModel } = require('./models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        
+        const limit = parseInt(req.query.limit) || 200;
+        const skip = parseInt(req.query.skip) || 0;
+        
+        const runs = await StrategyRun.find({ userId: req.userId })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip)
+            .lean();
+        
+        const total = await StrategyRun.countDocuments({ userId: req.userId });
+        
+        res.json({
+            success: true,
+            runs: runs,
+            total: total,
+            hasMore: (skip + runs.length) < total
+        });
+    } catch (error) {
+        console.error("Error fetching run history:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- Get Strategy-specific Run History (Protected) ---
+app.get('/api/strategy/:strategyId/history', authMiddleware, async (req, res) => {
+    try {
+        const { getStrategyRunModel } = require('./models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        
+        const limit = parseInt(req.query.limit) || 200;
+        const skip = parseInt(req.query.skip) || 0;
+        
+        const runs = await StrategyRun.find({ 
+            userId: req.userId,
+            strategyId: req.params.strategyId
+        })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip)
+            .lean();
+        
+        const total = await StrategyRun.countDocuments({ 
+            userId: req.userId,
+            strategyId: req.params.strategyId
+        });
+        
+        res.json({
+            success: true,
+            runs: runs,
+            total: total,
+            hasMore: (skip + runs.length) < total
+        });
+    } catch (error) {
+        console.error("Error fetching strategy run history:", error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -614,6 +757,116 @@ app.delete('/api/user/delete', authMiddleware, async (req, res) => {
 });
 
 // =================================================================
+// --- Broker API Routes ---
+// =================================================================
+
+// TEST ENDPOINT: Check credentials without calling Dhan API
+app.get('/api/test-credentials', authMiddleware, async (req, res) => {
+    try {
+        console.log('\n========== TEST CREDENTIALS ENDPOINT ==========');
+        console.log('User ID:', req.userId);
+        
+        const Credentials = getCredentialsModel();
+        const broker = 'dhan';
+        
+        // Step 1: Query credentials
+        console.log('Step 1: Querying credentials for broker:', broker);
+        const credentials = await Credentials.findOne({ 
+            userId: req.userId, 
+            broker: broker 
+        });
+        
+        if (!credentials) {
+            console.log('❌ NO credentials document found for broker:', broker);
+            return res.json({
+                success: false,
+                error: 'No credentials found',
+                message: 'You need to add Dhan credentials in Profile page'
+            });
+        }
+        
+        console.log('✅ Credentials document found');
+        console.log('Document ID:', credentials._id);
+        console.log('Broker:', credentials.broker);
+        console.log('ClientId exists:', !!credentials.clientId);
+        console.log('AccessToken exists:', !!credentials.accessToken);
+        console.log('ClientId length:', credentials.clientId?.length || 0);
+        console.log('AccessToken length:', credentials.accessToken?.length || 0);
+        
+        // Step 2: Check for empty fields
+        if (!credentials.clientId || !credentials.accessToken) {
+            console.log('❌ EMPTY credentials fields');
+            return res.json({
+                success: false,
+                error: 'Empty credentials',
+                hasClientId: !!credentials.clientId,
+                hasAccessToken: !!credentials.accessToken,
+                message: 'Credentials exist but fields are empty. Please update in Profile page.'
+            });
+        }
+        
+        // Step 3: Try to decrypt
+        console.log('Step 3: Attempting decryption...');
+        try {
+            const decryptedClientId = cryptoService.decrypt(credentials.clientId);
+            const decryptedAccessToken = cryptoService.decrypt(credentials.accessToken);
+            
+            console.log('✅ Decryption SUCCESSFUL');
+            console.log('Decrypted ClientId length:', decryptedClientId?.length || 0);
+            console.log('Decrypted AccessToken length:', decryptedAccessToken?.length || 0);
+            console.log('ClientId first 5 chars:', decryptedClientId?.substring(0, 5) + '...');
+            console.log('AccessToken first 10 chars:', decryptedAccessToken?.substring(0, 10) + '...');
+            
+            return res.json({
+                success: true,
+                message: 'Credentials found and decrypted successfully!',
+                details: {
+                    hasClientId: true,
+                    hasAccessToken: true,
+                    clientIdLength: decryptedClientId.length,
+                    accessTokenLength: decryptedAccessToken.length,
+                    clientIdPreview: decryptedClientId.substring(0, 5) + '...',
+                    accessTokenPreview: decryptedAccessToken.substring(0, 10) + '...'
+                }
+            });
+            
+        } catch (decryptError) {
+            console.error('❌ DECRYPTION ERROR:', decryptError.message);
+            console.error('Error stack:', decryptError.stack);
+            return res.json({
+                success: false,
+                error: 'Decryption failed',
+                errorMessage: decryptError.message,
+                message: 'Credentials are corrupted or encrypted with wrong key. Please delete and re-add in Profile page.'
+            });
+        }
+        
+    } catch (error) {
+        console.error('❌ TEST ENDPOINT ERROR:', error);
+        res.status(500).json({ 
+            success: false,
+            error: error.message,
+            stack: error.stack
+        });
+    }
+});
+
+const brokerRoutes = require('./api/broker.routes');
+app.use('/api/broker', brokerRoutes);
+
+// =================================================================
+// --- Strategy API Routes ---
+// =================================================================
+const strategyRoutes = require('./api/strategy.routes');
+app.use('/api/strategy', strategyRoutes);
+
+// =================================================================
+// --- Backtest API Routes ---
+// =================================================================
+const backtestRoutes = require('./api/backtest.routes');
+app.use('/api/backtest', backtestRoutes);
+
+// =================================================================
 // --- WebSocket Logic ---
 // =================================================================
 io.on('connection', (socket) => {
@@ -630,7 +883,17 @@ io.on('connection', (socket) => {
 async function startServer() {
     try {
         await connectDB();
-        await dockerService.buildImage();
+        
+        // Try to build Docker image, but don't fail if it errors
+        try {
+            await dockerService.buildImage();
+        } catch (dockerError) {
+            console.warn("⚠️ Docker image build failed - Docker features will be disabled");
+            console.warn("   To fix: Make sure Docker Desktop is running");
+            console.warn("   Error:", dockerError.message);
+            // Continue server startup even if Docker fails
+        }
+        
         server.listen(PORT, () => {
             console.log(`Server is listening on http://localhost:${PORT}`);
         });
@@ -641,4 +904,9 @@ async function startServer() {
 }
 
 startServer();
+
+ 
+ 
+
+
 

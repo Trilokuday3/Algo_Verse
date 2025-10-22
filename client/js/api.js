@@ -286,7 +286,7 @@ async function resumeStrategy(strategyId) {
  * @param {string} code - The Python code to run.
  * @returns {Promise<Object>} The server's response with the code output.
  */
-async function runStrategy(code, broker) {
+async function runStrategy(code, broker, strategyName = null, strategyId = null) {
     try {
         const token = getToken();
         const response = await fetch(`${API_BASE_URL}/api/run`, {
@@ -295,7 +295,7 @@ async function runStrategy(code, broker) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ code, broker }),
+            body: JSON.stringify({ code, broker, strategyName, strategyId }),
         });
         return await response.json();
     } catch (error) {
@@ -416,6 +416,43 @@ async function deleteAccount() {
     } catch (error) {
         console.error("Delete account request failed:", error);
         return { success: false, message: 'Error: Could not connect to the server.' };
+    }
+}
+
+// =================================================================
+// --- HELPER FUNCTIONS FOR DASHBOARD ---
+// =================================================================
+
+/**
+ * Gets all strategies (alias for getStrategies for consistency)
+ * @returns {Promise<Array>} A list of the user's strategies.
+ */
+async function getAllStrategies() {
+    return await getStrategies();
+}
+
+/**
+ * Gets a single strategy by ID
+ * @param {string} strategyId - The strategy ID
+ * @returns {Promise<Object>} The strategy object
+ */
+async function getStrategyById(strategyId) {
+    try {
+        const token = getToken();
+        const timestamp = new Date().getTime();
+        const response = await fetch(`${API_BASE_URL}/api/strategies/${strategyId}?_t=${timestamp}`, {
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
+        if (!response.ok) return null;
+        return await response.json();
+    } catch (error) {
+        console.error("Get strategy by ID request failed:", error);
+        return null;
     }
 }
 

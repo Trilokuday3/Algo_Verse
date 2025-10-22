@@ -9,6 +9,9 @@ router.get('/', authMiddleware, strategyController.getAllStrategies);
 // Create new strategy
 router.post('/', authMiddleware, strategyController.createStrategy);
 
+// Get run history for all strategies (MUST be before /:strategyId routes)
+router.get('/history/all', authMiddleware, strategyController.getAllRunHistory);
+
 // Get single strategy
 router.get('/:strategyId', authMiddleware, strategyController.getStrategy);
 
@@ -29,5 +32,8 @@ router.post('/:strategyId/pause', authMiddleware, strategyController.pauseStrate
 
 // Resume strategy
 router.post('/:strategyId/resume', authMiddleware, strategyController.resumeStrategy);
+
+// Get run history for specific strategy
+router.get('/:strategyId/history', authMiddleware, strategyController.getStrategyRunHistory);
 
 module.exports = router;

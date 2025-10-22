@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run History - Alpha Z</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="antialiased">
+    <div id="app">
+        <!-- Header Navigation -->
+        <header class="m3-top-app-bar sticky top-0 z-50">
+            <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+                <!-- Logo -->
+                <a href="dashboard.html" class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
+                        <span class="text-2xl font-bold" style="color: var(--on-primary-container-color);">α</span>
+                    </div>
+                    <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+                </a>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="dashboard.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Dashboard</a>
+                    <a href="strategies.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">My Strategies</a>
+                    <a href="terminal.html" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Terminal</a>
+                    <a href="history.html" class="m3-filled-button m3-label-large px-4 py-2 rounded-full transition-all" aria-current="page">History</a>
+                    <a href="profile.html#broker-section" class="m3-text-button m3-label-large px-4 py-2 rounded-full hover:bg-gray-500/10 transition-all">Broker Connection</a>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:opacity-80 transition-opacity" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                        <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-surface-variant-color);"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden" style="color: var(--on-surface-variant-color);"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+
+                    <!-- Account Menu -->
+                    <div class="relative">
+                        <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none shadow-md transition-all hover:scale-105" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color);" aria-label="Account Menu">
+                            <span id="account-icon" class="font-bold text-lg">A</span>
+                        </button>
+                        <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50" style="background: var(--surface-color); border: 2px solid var(--outline-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
+                            <div class="p-4">
+                                <div class="px-3 py-4 rounded-xl mb-3" style="background-color: var(--primary-container-color);">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-md" style="background-color: var(--primary-color); color: var(--on-primary-color);">
+                                            <span id="dropdown-avatar-text">A</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="m3-title-medium font-semibold truncate" style="color: var(--on-primary-container-color);">Account</p>
+                                            <p id="dropdown-email" class="m3-body-small mt-0.5 truncate" style="color: var(--on-primary-container-color); opacity: 0.8;">Loading...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large hover:bg-gray-500/10 transition-all">
+                                        <span>Profile Settings</span>
+                                    </a>
+                                </div>
+                                <div class="my-3" style="border-top: 1px solid var(--outline-color);"></div>
+                                <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large w-full text-left hover:bg-red-500/10 transition-all" style="color: var(--md-sys-color-error);">
+                                    <span>Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 md:px-6 py-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="m3-headline-large font-bold mb-2">Run History</h1>
+                <p class="m3-body-large" style="color: var(--on-surface-variant-color);">View all your strategy execution logs and terminal outputs</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="m3-card p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="m3-body-small mb-2 block" style="color: var(--on-surface-variant-color);">Filter by Strategy</label>
+                        <select id="strategy-filter" class="w-full px-4 py-2 rounded-lg border" style="background-color: var(--surface-variant-color); border-color: var(--outline-color); color: var(--on-surface-color);">
+                            <option value="">All Strategies</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="m3-body-small mb-2 block" style="color: var(--on-surface-variant-color);">Filter by Broker</label>
+                        <select id="broker-filter" class="w-full px-4 py-2 rounded-lg border" style="background-color: var(--surface-variant-color); border-color: var(--outline-color); color: var(--on-surface-color);">
+                            <option value="">All Brokers</option>
+                            <option value="dhan">Dhan</option>
+                            <option value="zerodha">Zerodha</option>
+                            <option value="upstox">Upstox</option>
+                            <option value="angelone">Angel One</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="m3-body-small mb-2 block" style="color: var(--on-surface-variant-color);">Filter by Status</label>
+                        <select id="status-filter" class="w-full px-4 py-2 rounded-lg border" style="background-color: var(--surface-variant-color); border-color: var(--outline-color); color: var(--on-surface-color);">
+                            <option value="">All Status</option>
+                            <option value="success">Success</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="clear-filters" class="w-full px-4 py-2 rounded-lg border transition-all hover:bg-gray-500/10" style="border-color: var(--outline-color); color: var(--on-surface-color);">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History List -->
+            <div id="history-container">
+                <div id="loading" class="text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2" style="border-color: var(--primary-color);"></div>
+                    <p class="mt-4 m3-body-large" style="color: var(--on-surface-variant-color);">Loading history...</p>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div id="load-more-container" class="text-center mt-6 hidden">
+                <button id="load-more-btn" class="m3-text-button px-6 py-3 rounded-full border transition-all hover:bg-gray-500/10" style="border-color: var(--outline-color);">
+                    Load More
+                </button>
+            </div>
+        </main>
+
+        <!-- Terminal Output Modal -->
+        <div id="output-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50" style="display: none;">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+                <div class="p-6 border-b" style="border-color: var(--outline-color);">
+                    <div class="flex items-center justify-between">
+                        <h2 class="m3-title-large font-semibold">Terminal Output</h2>
+                        <button id="close-modal" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-500/10 transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <p id="modal-strategy-name" class="m3-body-large font-semibold"></p>
+                        <p id="modal-run-info" class="m3-body-small" style="color: var(--on-surface-variant-color);"></p>
+                    </div>
+                </div>
+                <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 200px);">
+                    <pre id="modal-output" class="font-mono text-sm p-4 rounded-lg overflow-x-auto" style="background-color: var(--surface-variant-color); color: var(--on-surface-color);"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/history.js"></script>
+</body>
+</html>

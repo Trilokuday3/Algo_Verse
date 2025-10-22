@@ -22,6 +22,12 @@ const connectDB = async () => {
         const connectionOptions = {
             serverSelectionTimeoutMS: 30000,
             socketTimeoutMS: 75000,
+            maxPoolSize: 10,
+            minPoolSize: 2,
+            // Fix SSL/TLS issues with Node.js v24
+            tls: true,
+            tlsAllowInvalidCertificates: true, // Allow self-signed certificates
+            tlsAllowInvalidHostnames: true,
         };
         
         // Connect to user database

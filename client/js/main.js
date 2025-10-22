@@ -78,6 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             // Clear the authentication token
             localStorage.removeItem('token');
+            // Clear session storage (including token notification flag)
+            sessionStorage.clear();
             // Redirect to the login page
             window.location.href = 'login.html';
         });

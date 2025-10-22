@@ -171,9 +171,34 @@ const deleteAccount = async (req, res) => {
     }
 };
 
+// Get all broker credentials with timestamps (for token expiry check)
+const getBrokerCredentials = async (req, res) => {
+    try {
+        const Credentials = getCredentialsModel();
+        
+        // Get all credentials for the user
+        const credentials = await Credentials.find({ userId: req.userId }).select('-accessToken -clientId -brokerPassword -apiSecret -totpSecret');
+        
+        // Return credentials with metadata (not the actual sensitive data)
+        const credentialsList = credentials.map(cred => ({
+            broker: cred.broker,
+            hasClientId: !!cred.clientId,
+            hasAccessToken: !!cred.accessToken,
+            updatedAt: cred.updatedAt,
+            createdAt: cred.createdAt
+        }));
+        
+        res.json({ credentials: credentialsList });
+    } catch (error) {
+        console.error("Get broker credentials error:", error);
+        res.status(500).json({ message: 'Error fetching broker credentials.' });
+    }
+};
+
 module.exports = {
     getProfile,
     updateProfile,
     changePassword,
-    deleteAccount
+    deleteAccount,
+    getBrokerCredentials
 };

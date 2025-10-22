@@ -351,6 +351,68 @@ const resumeStrategy = async (req, res) => {
     }
 };
 
+// Get all run history for user
+const getAllRunHistory = async (req, res) => {
+    try {
+        const { getStrategyRunModel } = require('../models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        
+        const limit = parseInt(req.query.limit) || 50;
+        const skip = parseInt(req.query.skip) || 0;
+        
+        const history = await StrategyRun.find({ userId: req.userId })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip);
+        
+        const total = await StrategyRun.countDocuments({ userId: req.userId });
+        
+        res.json({
+            history,
+            total,
+            limit,
+            skip
+        });
+    } catch (error) {
+        console.error("Get run history error:", error);
+        res.status(500).json({ message: 'Error fetching run history.' });
+    }
+};
+
+// Get run history for specific strategy
+const getStrategyRunHistory = async (req, res) => {
+    try {
+        const { getStrategyRunModel } = require('../models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        
+        const limit = parseInt(req.query.limit) || 50;
+        const skip = parseInt(req.query.skip) || 0;
+        
+        const history = await StrategyRun.find({ 
+            userId: req.userId,
+            strategyId: req.params.strategyId
+        })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip);
+        
+        const total = await StrategyRun.countDocuments({ 
+            userId: req.userId,
+            strategyId: req.params.strategyId
+        });
+        
+        res.json({
+            history,
+            total,
+            limit,
+            skip
+        });
+    } catch (error) {
+        console.error("Get strategy run history error:", error);
+        res.status(500).json({ message: 'Error fetching strategy run history.' });
+    }
+};
+
 module.exports = {
     getAllStrategies,
     createStrategy,
@@ -360,5 +422,7 @@ module.exports = {
     startStrategy,
     stopStrategy,
     pauseStrategy,
-    resumeStrategy
+    resumeStrategy,
+    getAllRunHistory,
+    getStrategyRunHistory
 };

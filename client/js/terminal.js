@@ -321,7 +321,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         addLog('> Sending code to server...', 'info');
         
         try {
-            const result = await runStrategy(code, broker);
+            // Pass strategy name and ID for history tracking
+            const strategyName = currentStrategy ? currentStrategy.name : 'Unnamed Strategy';
+            const strategyId = currentStrategy ? currentStrategy._id : null;
+            
+            const result = await runStrategy(code, broker, strategyName, strategyId);
             
             if (result.output) {
                 addLog('> Execution completed!', 'success');
