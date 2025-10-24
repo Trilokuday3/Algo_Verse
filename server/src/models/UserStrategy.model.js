@@ -28,6 +28,13 @@ const strategySchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    // Reference to the currently running StrategyRun (if any)
+    currentRunId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        default: null,
+        index: true
+    },
     broker: {
         type: String,
         enum: ['dhan', 'zerodha', 'upstox', 'angelone'],

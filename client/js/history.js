@@ -14,14 +14,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Modal elements
     const outputModal = document.getElementById('output-modal');
     const closeModalBtn = document.getElementById('close-modal');
-    const modalStrategyName = document.getElementById('modal-strategy-name');
-    const modalRunInfo = document.getElementById('modal-run-info');
-    const modalOutput = document.getElementById('modal-output');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSubtitle = document.getElementById('modal-subtitle');
+    const logRows = document.getElementById('log-rows');
+    const copyLogBtn = document.getElementById('copy-log-btn');
+    const downloadLogBtn = document.getElementById('download-log-btn');
+    const collapseLogBtn = document.getElementById('collapse-log-btn');
+    const modalSearchInput = document.getElementById('modal-log-search');
+    const modalAutoScrollBtn = document.getElementById('modal-auto-scroll');
 
     let allHistory = [];
     let filteredHistory = [];
     let displayedCount = 0;
     const itemsPerPage = 20;
+    let currentLines = [];
+
+    // Helpers
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/[&<>"'`]/g, function (match) {
+            return ({
+                '&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#39;', '`': '&#96;'
+            })[match];
+        });
+    }
+
+    function sanitizeFileName(name) {
+        return (name || 'run').replace(/[^a-z0-9-_\.]/gi, '_');
+    }
+
+    // Format durations (ms) into human-readable strings
+    function formatDuration(ms) {
+        if (ms === null || ms === undefined || isNaN(ms)) return 'N/A';
+        const totalSeconds = Math.floor(Number(ms) / 1000);
+        if (totalSeconds < 60) {
+            // show seconds with two decimals for shorter runs
+            return `${(Number(ms) / 1000).toFixed(2)}s`;
+        }
+        if (totalSeconds < 3600) {
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${mins}m ${secs}s`;
+        }
+        const hours = Math.floor(totalSeconds / 3600);
+        const rem = totalSeconds % 3600;
+        const mins = Math.floor(rem / 60);
+        const secs = rem % 60;
+        return `${hours}h ${mins}m ${secs}s`;
+    }
 
     // Fetch run history
     async function fetchHistory() {
@@ -120,12 +160,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         const card = document.createElement('div');
         card.className = 'm3-card p-6 mb-4 cursor-pointer hover:shadow-lg transition-all';
         
-        const runDate = new Date(run.createdAt);
-        const formattedDate = runDate.toLocaleString();
-        const executionTime = run.executionTime ? `${(run.executionTime / 1000).toFixed(2)}s` : 'N/A';
-        
-        const statusColor = run.status === 'success' ? 'var(--md-sys-color-primary)' : 'var(--md-sys-color-error)';
-        const statusText = run.status === 'success' ? 'Success' : 'Error';
+        const startDate = run.createdAt ? new Date(run.createdAt) : null;
+        const startStr = startDate ? startDate.toLocaleString() : 'Unknown';
+        const stopDate = run.stopTime ? new Date(run.stopTime) : null;
+        const stopStr = stopDate ? stopDate.toLocaleString() : (run.status === 'running' ? 'Running' : 'N/A');
+    const executionTime = formatDuration(run.executionTime);
+
+        // Status badge mapping
+        let statusColor = 'var(--md-sys-color-primary)';
+        let statusText = 'Success';
+        if (run.status === 'error') {
+            statusColor = 'var(--md-sys-color-error)';
+            statusText = 'Error';
+        } else if (run.status === 'running') {
+            statusColor = 'var(--primary-color)';
+            statusText = 'Running';
+        }
         const brokerName = {
             'dhan': 'Dhan',
             'zerodha': 'Zerodha',
@@ -148,14 +198,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>${formattedDate}</span>
+                            <span>Start: ${startStr}</span>
                         </div>
                         <div class="flex items-center space-x-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
-                            <span>${executionTime}</span>
+                            <span>Stop: ${stopStr}</span>
                         </div>
                         <div class="flex items-center space-x-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -179,9 +229,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Show output modal
     function showOutput(run) {
-        const runDate = new Date(run.createdAt);
-        const formattedDate = runDate.toLocaleString();
-        const executionTime = run.executionTime ? `${(run.executionTime / 1000).toFixed(2)}s` : 'N/A';
+        const startDate = run.createdAt ? new Date(run.createdAt) : null;
+        const startStr = startDate ? startDate.toLocaleString() : 'Unknown';
+        const stopDate = run.stopTime ? new Date(run.stopTime) : null;
+        const stopStr = stopDate ? stopDate.toLocaleString() : (run.status === 'running' ? 'Running' : 'N/A');
+    const executionTime = formatDuration(run.executionTime);
         const brokerName = {
             'dhan': 'Dhan',
             'zerodha': 'Zerodha',
@@ -189,23 +241,153 @@ document.addEventListener('DOMContentLoaded', async () => {
             'angelone': 'Angel One'
         }[run.broker] || run.broker;
 
-        modalStrategyName.textContent = run.strategyName;
-        modalRunInfo.textContent = `${formattedDate} • ${brokerName} • Execution Time: ${executionTime} • Status: ${run.status}`;
-        modalOutput.textContent = run.terminalOutput || 'No output available';
-        
+        modalTitle.textContent = run.strategyName;
+        modalSubtitle.textContent = `Start: ${startStr} • Stop: ${stopStr} • Execution Time: ${executionTime} • Status: ${run.status}`;
+        const logText = run.terminalOutput || 'No output available';
+
+        // Render with line numbers
+        const lines = logText.split(/\r?\n/);
+        currentLines = lines;
+        // Render rows: each row contains the number and the content so wrapped lines keep numbers aligned
+        if (logRows) {
+            logRows.innerHTML = lines.map((l, idx) => `\n                <div class="log-row">\n                    <span class="log-line-number">${idx+1}</span>\n                    <span class="log-line">${escapeHtml(l)}</span>\n                </div>`).join('\n');
+            // ensure scroll area will be handled by container
+        }
+
+        // Update footer counts (Info / Warning / Error) and total
+        (function updateFooterCounts() {
+            try {
+                let info = 0, warn = 0, err = 0;
+                lines.forEach(l => {
+                    const up = (l || '').toUpperCase();
+                    if (up.includes('ERROR')) err++;
+                    else if (up.includes('WARN')) warn++;
+                    else if (up.includes('INFO')) info++;
+                });
+                const infoEl = document.getElementById('footer-info-count');
+                const warnEl = document.getElementById('footer-warn-count');
+                const errEl = document.getElementById('footer-error-count');
+                const totalEl = document.getElementById('footer-total');
+                if (infoEl) infoEl.textContent = `${info} Info`;
+                if (warnEl) warnEl.textContent = `${warn} Warning`;
+                if (errEl) errEl.textContent = `${err} Error`;
+                if (totalEl) totalEl.textContent = `Total: ${lines.length} logs`;
+            } catch (e) {
+                console.error('Footer count update failed', e);
+            }
+        })();
+
+    // Footer removed (no Info/Warning/Error counters) — intentionally omitted to match strategy log viewer
+
+        // Setup action buttons
+        if (copyLogBtn) {
+            // label to match screenshot
+            copyLogBtn.textContent = 'Copy All';
+            copyLogBtn.onclick = async () => {
+                try {
+                    await navigator.clipboard.writeText(logText);
+                    copyLogBtn.textContent = 'Copied';
+                    setTimeout(() => copyLogBtn.textContent = 'Copy All', 1200);
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+            };
+        }
+        if (downloadLogBtn) {
+            downloadLogBtn.onclick = () => {
+                const filename = `${sanitizeFileName(run.strategyName)}_${new Date(run.createdAt).toISOString().replace(/[:.]/g,'-')}.txt`;
+                const blob = new Blob([logText], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            };
+        }
+        if (collapseLogBtn) {
+            // In the screenshot this button is a 'Clear' action — clear displayed logs
+            collapseLogBtn.textContent = 'Clear';
+            collapseLogBtn.onclick = () => {
+                if (logRows) logRows.innerHTML = '';
+                currentLines = [];
+                const infoEl = document.getElementById('footer-info-count');
+                const warnEl = document.getElementById('footer-warn-count');
+                const errEl = document.getElementById('footer-error-count');
+                const totalEl = document.getElementById('footer-total');
+                if (infoEl) infoEl.textContent = `0 Info`;
+                if (warnEl) warnEl.textContent = `0 Warning`;
+                if (errEl) errEl.textContent = `0 Error`;
+                if (totalEl) totalEl.textContent = `Total: 0 logs`;
+            };
+        }
+
+        // Auto-scroll behavior
+        if (modalAutoScrollBtn) {
+            const active = modalAutoScrollBtn.getAttribute('data-active') === 'true';
+            if (active) {
+                const container = document.getElementById('log-viewer-content');
+                if (container) container.scrollTop = container.scrollHeight;
+            }
+            modalAutoScrollBtn.onclick = () => {
+                const isActive = modalAutoScrollBtn.getAttribute('data-active') === 'true';
+                modalAutoScrollBtn.setAttribute('data-active', (!isActive).toString());
+                modalAutoScrollBtn.style.opacity = isActive ? '0.7' : '1';
+            };
+        }
+
+        // Search behavior
+        if (modalSearchInput) {
+            modalSearchInput.value = '';
+            modalSearchInput.oninput = () => {
+                const q = modalSearchInput.value.trim();
+                renderSearchHighlight(q);
+            };
+        }
+
         outputModal.style.display = 'flex';
     }
 
     // Close modal
     closeModalBtn.addEventListener('click', () => {
         outputModal.style.display = 'none';
+        if (logRows) logRows.innerHTML = '';
+        currentLines = [];
     });
 
     outputModal.addEventListener('click', (e) => {
-        if (e.target === outputModal) {
+            if (e.target === outputModal) {
             outputModal.style.display = 'none';
+            if (logRows) logRows.innerHTML = '';
+            currentLines = [];
         }
     });
+
+    // Render search highlights
+    function renderSearchHighlight(query) {
+        if (!logRows) return;
+        if (!currentLines || currentLines.length === 0) return;
+        if (!query) {
+            logRows.innerHTML = currentLines.map((l, idx) => `\n                <div class="log-row">\n                    <span class="log-line-number">${idx+1}</span>\n                    <span class="log-line">${escapeHtml(l)}</span>\n                </div>`).join('\n');
+            return;
+        }
+        const lower = query.toLowerCase();
+        const newHtml = currentLines.map((l, idx) => {
+            const li = l || '';
+            const i = li.toLowerCase().indexOf(lower);
+            if (i === -1) return `\n                <div class="log-row">\n                    <span class="log-line-number">${idx+1}</span>\n                    <span class="log-line">${escapeHtml(li)}</span>\n                </div>`;
+            const before = escapeHtml(li.slice(0, i));
+            const match = escapeHtml(li.slice(i, i + query.length));
+            const after = escapeHtml(li.slice(i + query.length));
+            return `\n                <div class="log-row">\n                    <span class="log-line-number">${idx+1}</span>\n                    <span class="log-line">${before}<span class="search-highlight">${match}</span>${after}</span>\n                </div>`;
+        }).join('\n');
+        logRows.innerHTML = newHtml;
+        // Scroll to first match
+        const first = logRows.querySelector('.search-highlight');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
     // Filter functions
     function applyFilters() {
@@ -277,23 +459,4 @@ async function updateAccountIcon() {
 }
 
 // Account dropdown toggle
-document.addEventListener('click', function(event) {
-    const accountButton = document.getElementById('account-button');
-    const accountDropdown = document.getElementById('account-dropdown');
-    
-    if (accountButton && accountButton.contains(event.target)) {
-        accountDropdown.classList.toggle('hidden');
-    } else if (accountDropdown && !accountDropdown.contains(event.target)) {
-        accountDropdown.classList.add('hidden');
-    }
-});
-
-// Logout functionality
-const logoutBtn = document.getElementById('logout-btn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', function() {
-        localStorage.removeItem('token');
-        sessionStorage.clear();
-        window.location.href = 'login.html';
-    });
-}
+// Account dropdown and logout logic are handled centrally in `client/js/main.js`.

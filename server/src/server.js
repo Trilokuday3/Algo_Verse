@@ -353,11 +353,62 @@ app.post('/api/strategies/:strategyId/start', authMiddleware, async (req, res) =
         strategy.containerId = containerId;
         await strategy.save();
         
+        // Save run history entry when strategy starts
+        try {
+            const { getStrategyRunModel } = require('./models/StrategyRun.model');
+            const StrategyRun = getStrategyRunModel();
+            
+            // Create a running run entry. We'll update it when the strategy stops.
+            const runHistory = new StrategyRun({
+                userId: req.userId,
+                strategyId: strategy._id,
+                strategyName: strategy.name,
+                broker: broker,
+                terminalOutput: `Strategy "${strategy.name}" started in background container.\nContainer ID: ${containerId}\nStatus: Running\n\nNote: This is a long-running strategy. Check logs for real-time output.`,
+                status: 'running',
+                executionTime: 0 // will be updated on stop
+            });
+            
+            await runHistory.save();
+            // store reference to running run on the Strategy document
+            strategy.currentRunId = runHistory._id;
+            await strategy.save();
+            console.log(`📝 Run history (running) saved for strategy: ${strategy.name} (runId: ${runHistory._id})`);
+        } catch (saveError) {
+            console.error("Error saving run history:", saveError);
+        }
+        
         console.log(`✅ Strategy started successfully. Container ID: ${containerId}`);
         res.json({ success: true, message: `${strategy.name} has been started.` });
     } catch (error) {
         console.error("❌ Error starting strategy:", error);
         console.error("Error stack:", error.stack);
+        
+        // Save error to run history
+        try {
+            const { getStrategyRunModel } = require('./models/StrategyRun.model');
+            const StrategyRun = getStrategyRunModel();
+            const Strategy = getStrategyModel();
+            const strategy = await Strategy.findOne({ _id: req.params.strategyId, userId: req.userId });
+            
+            if (strategy) {
+                const runHistory = new StrategyRun({
+                    userId: req.userId,
+                    strategyId: strategy._id,
+                    strategyName: strategy.name,
+                    broker: strategy.broker || 'dhan',
+                    terminalOutput: `Error starting strategy: ${error.message}\n\nStack trace:\n${error.stack}`,
+                    status: 'error',
+                    executionTime: 0,
+                    errorMessage: error.message
+                });
+                
+                await runHistory.save();
+            }
+        } catch (saveError) {
+            console.error("Error saving error run history:", saveError);
+        }
+        
         res.status(500).json({ 
             success: false,
             message: 'Error starting strategy: ' + error.message 
@@ -370,10 +421,79 @@ app.post('/api/strategies/:strategyId/stop', authMiddleware, async (req, res) =>
         const Strategy = getStrategyModel();
         const strategy = await Strategy.findOne({ _id: req.params.strategyId, userId: req.userId });
         if (!strategy) return res.status(404).json({ message: 'Strategy not found.' });
-        if (strategy.containerId) await dockerService.stopStrategyContainer(strategy.containerId);
+        // Try to fetch container logs before stopping/removing container so we can persist them
+        let containerLogs = '';
+        if (strategy.containerId) {
+            try {
+                containerLogs = await dockerService.getContainerLogs(strategy.containerId);
+            } catch (logErr) {
+                console.error(`Error fetching container logs for ${strategy.containerId}:`, logErr);
+            }
+            try {
+                await dockerService.stopStrategyContainer(strategy.containerId);
+            } catch (stopErr) {
+                console.error(`Error stopping container ${strategy.containerId}:`, stopErr);
+            }
+        }
+
         strategy.status = 'Stopped';
         strategy.containerId = null;
         await strategy.save();
+        
+        // Update the running run entry (if any) when strategy stops
+        try {
+            const { getStrategyRunModel } = require('./models/StrategyRun.model');
+            const StrategyRun = getStrategyRunModel();
+
+            let runToUpdate = null;
+            if (strategy.currentRunId) {
+                runToUpdate = await StrategyRun.findOne({ _id: strategy.currentRunId, userId: req.userId });
+            }
+
+            // Fallback: find the most recent run for this strategy
+            if (!runToUpdate) {
+                runToUpdate = await StrategyRun.findOne({ strategyId: strategy._id, userId: req.userId }).sort({ createdAt: -1 });
+            }
+
+            if (runToUpdate) {
+                const stopNote = `\n\nStrategy was stopped by user. Container stopped and resources released.`;
+                runToUpdate.terminalOutput = (runToUpdate.terminalOutput || '') + stopNote;
+                if (containerLogs) {
+                    runToUpdate.terminalOutput += `\n\n=== Container Logs ===\n${containerLogs}`;
+                }
+                // Per UX decision: mark manual stops as 'error' so UI shows Error badge
+                runToUpdate.status = 'error';
+                // Calculate execution time using createdAt
+                const startedAt = new Date(runToUpdate.createdAt).getTime();
+                runToUpdate.executionTime = Date.now() - startedAt;
+                runToUpdate.stopTime = new Date();
+                await runToUpdate.save();
+                console.log(`📝 Updated run history (stopped) for strategy: ${strategy.name} (runId: ${runToUpdate._id})`);
+            } else {
+                // No running entry found - create a stop entry as fallback
+                const runHistory = new StrategyRun({
+                    userId: req.userId,
+                    strategyId: strategy._id,
+                    strategyName: strategy.name,
+                    broker: strategy.broker || 'dhan',
+                    terminalOutput: `Strategy "${strategy.name}" has been stopped.\nStatus: Stopped\n\nThe strategy was running in a background container and has been terminated.` + (containerLogs ? `\n\n=== Container Logs ===\n${containerLogs}` : ''),
+                    status: 'error',
+                    executionTime: 0,
+                    stopTime: new Date()
+                });
+                await runHistory.save();
+                console.log(`📝 Stop history created (fallback) for strategy: ${strategy.name}`);
+            }
+
+            // Clear currentRunId on strategy (if set)
+            if (strategy.currentRunId) {
+                strategy.currentRunId = null;
+                await strategy.save();
+            }
+        } catch (saveError) {
+            console.error("Error saving/updating stop history:", saveError);
+        }
+        
         res.json({ success: true, message: `${strategy.name} has been stopped.` });
     } catch (error) {
         console.error("Error stopping strategy:", error);

@@ -14,6 +14,7 @@
     <!-- Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/profile.css">
     <style>
         /* Account Dropdown Animation */
         @keyframes fadeIn {
@@ -64,17 +65,17 @@
         }
     </style>
 </head>
-<body class="antialiased min-h-screen" style="background-color: var(--surface-color);">
+<body class="antialiased min-h-screen profile-body">
 
     <!-- Header Navigation -->
     <header class="m3-top-app-bar sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
             <!-- Logo -->
             <a href="dashboard.html" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
-                    <span class="text-2xl font-bold" style="color: var(--on-primary-container-color);">α</span>
+                <div class="w-10 h-10 rounded-full flex items-center justify-center site-logo">
+                    <span class="text-2xl font-bold site-logo-text">α</span>
                 </div>
-                <span class="m3-title-large font-semibold" style="color: var(--on-surface-variant-color);">Alpha Z</span>
+                <span class="m3-title-large font-semibold site-title">Alpha Z</span>
             </a>
 
             <!-- Navigation Links -->
@@ -89,7 +90,7 @@
             <!-- Actions -->
             <div class="flex items-center space-x-3">
                 <!-- Theme Toggle -->
-                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:opacity-80 transition-opacity" style="background-color: var(--surface-variant-color);" aria-label="Toggle dark mode">
+                <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:opacity-80 transition-opacity theme-toggle" aria-label="Toggle dark mode">
                     <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -108,38 +109,38 @@
 
                 <!-- Account Menu -->
                     <div class="relative">
-                        <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all hover:scale-105 shadow-md" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);" aria-label="Account Menu" aria-expanded="false" aria-haspopup="true">
+                        <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all hover:scale-105 shadow-md account-button" aria-label="Account Menu" aria-expanded="false" aria-haspopup="true">
                             <span id="account-icon" class="font-bold text-lg">A</span>
                         </button>
-                        <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in" style="background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-variant-color) 100%); border: 2px solid var(--outline-color); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+                        <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in account-dropdown">
                             <div class="p-4">
                                 <!-- Account Header with Avatar -->
-                                <div class="px-3 py-4 rounded-xl mb-3" style="background-color: var(--primary-container-color);">
+                                <div class="px-3 py-4 rounded-xl mb-3 account-header">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-md" style="background-color: var(--primary-color); color: var(--on-primary-color);">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shadow-md account-avatar-small">
                                             <span id="dropdown-avatar-text">A</span>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="m3-title-medium font-semibold truncate" style="color: var(--on-primary-container-color);">Account</p>
-                                            <p id="dropdown-email" class="m3-body-small mt-0.5 truncate" style="color: var(--on-primary-container-color); opacity: 0.8;">Loading...</p>
+                                            <p class="m3-title-medium font-semibold truncate account-title">Account</p>
+                                            <p id="dropdown-email" class="m3-body-small mt-0.5 truncate account-email">Loading...</p>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <!-- Menu Items -->
                                 <div class="space-y-1">
-                                    <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
-                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--primary-container-color);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                    <a href="profile.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02] dropdown-link">
+                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center menu-item-icon primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-item-icon-svg primary-svg">
                                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                                 <circle cx="12" cy="7" r="4"></circle>
                                             </svg>
                                         </div>
                                         <span>Profile Settings</span>
                                     </a>
-                                    <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02]" style="color: var(--on-surface-color); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--surface-variant-color)'" onmouseout="this.style.backgroundColor='transparent'">
-                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: var(--secondary-container-color);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
+                                    <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02] dropdown-link">
+                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center menu-item-icon secondary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-item-icon-svg secondary-svg">
                                                 <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>
                                             </svg>
@@ -148,11 +149,11 @@
                                     </a>
                                 </div>
                                 
-                                <div class="my-3" style="border-top: 1px solid var(--outline-variant-color);"></div>
+                                <div class="my-3 dropdown-divider"></div>
                                 
                                 <!-- Logout Button -->
-                                <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02] w-full text-left" style="color: var(--error-color); background-color: transparent;" onmouseover="this.style.backgroundColor='rgba(var(--error-rgb, 220, 53, 69), 0.1)'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background-color: rgba(var(--error-rgb, 220, 53, 69), 0.15);">
+                                <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl m3-label-large transition-all hover:scale-[1.02] w-full text-left logout-btn">
+                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center logout-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--error-color);">
                                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                             <polyline points="16 17 21 12 16 7"></polyline>
@@ -238,41 +239,40 @@
                 <!-- Profile Section -->
                 <section id="profile-section" class="content-section">
                     <!-- Profile Card -->
-                    <div class="m3-card p-8 mb-6">
+                        <div class="m3-card p-8 mb-6 profile-card">
             <div class="flex items-center space-x-6 mb-8">
                 <!-- Avatar -->
-                <div class="w-24 h-24 rounded-full flex items-center justify-center text-4xl font-bold" style="background-color: var(--primary-container-color); color: var(--on-primary-container-color);">
-                    <span id="avatar-letter">A</span>
+                    <div class="profile-avatar" title="Profile avatar">
+                        <span id="avatar-letter">A</span>
                 </div>
                 
                 <!-- User Info -->
-                <div class="flex-grow">
+                    <div class="flex-grow profile-info">
                     <h2 id="profile-email" class="m3-headline-medium mb-2" style="color: var(--on-surface-color);">Loading...</h2>
                     <p class="m3-body-medium" style="color: var(--on-surface-variant-color);">Alpha Z Member</p>
                     <p id="member-since" class="m3-body-small mt-2" style="color: var(--on-surface-variant-color);">Member since: Loading...</p>
                 </div>
             </div>
-
-            <!-- Account Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
-                    <p class="m3-label-small" style="color: var(--on-surface-variant-color);">Total Strategies</p>
-                    <p id="total-strategies" class="m3-headline-small mt-1" style="color: var(--on-surface-color);">0</p>
+                <!-- Account Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 profile-stats">
+                    <div class="stat-card">
+                        <div class="label m3-label-small">Total Strategies</div>
+                        <div id="total-strategies" class="value m3-headline-small">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label m3-label-small">Active Strategies</div>
+                        <div id="active-strategies" class="value m3-headline-small">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label m3-label-small">Account Status</div>
+                        <div class="value m3-headline-small" style="color: #10b981;">Active</div>
+                    </div>
                 </div>
-                <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
-                    <p class="m3-label-small" style="color: var(--on-surface-variant-color);">Active Strategies</p>
-                    <p id="active-strategies" class="m3-headline-small mt-1" style="color: var(--on-surface-color);">0</p>
-                </div>
-                <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
-                    <p class="m3-label-small" style="color: var(--on-surface-variant-color);">Account Status</p>
-                    <p class="m3-headline-small mt-1" style="color: #10b981;">Active</p>
-                </div>
-            </div>
         </div>
 
         <!-- Account Details Section -->
         <div class="m3-card p-8 mb-6">
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center justify-between mb-6 edit-actions">
                 <h3 class="m3-title-large" style="color: var(--on-surface-color);">Account Details</h3>
                 <button id="edit-account-btn" class="m3-text-button m3-label-large px-4 py-2 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline mr-2">
@@ -283,38 +283,36 @@
             </div>
 
             <div id="account-view" class="space-y-4">
-                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                <div class="account-detail-row">
                     <div>
-                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">First Name</p>
-                        <p id="view-firstname" class="m3-body-large mt-1" style="color: var(--on-surface-color);">Loading...</p>
+                        <div class="label m3-label-medium">First Name</div>
+                        <div id="view-firstname" class="value m3-body-large">Loading...</div>
                     </div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                <div class="account-detail-row">
                     <div>
-                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">Last Name</p>
-                        <p id="view-lastname" class="m3-body-large mt-1" style="color: var(--on-surface-color);">Loading...</p>
+                        <div class="label m3-label-medium">Last Name</div>
+                        <div id="view-lastname" class="value m3-body-large">Loading...</div>
                     </div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                <div class="account-detail-row">
                     <div>
-                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">Phone Number</p>
-                        <p id="view-phone" class="m3-body-large mt-1" style="color: var(--on-surface-color);">Loading...</p>
+                        <div class="label m3-label-medium">Phone Number</div>
+                        <div id="view-phone" class="value m3-body-large">Loading...</div>
                     </div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                <div class="account-detail-row">
                     <div>
-                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">Email Address</p>
-                        <p id="view-email" class="m3-body-large mt-1" style="color: var(--on-surface-color);">Loading...</p>
+                        <div class="label m3-label-medium">Email Address</div>
+                        <div id="view-email" class="value m3-body-large">Loading...</div>
                     </div>
                 </div>
-                <div class="flex items-center justify-between py-3 border-b" style="border-color: var(--outline-variant-color);">
+                <div class="account-detail-row">
                     <div>
-                        <p class="m3-label-medium" style="color: var(--on-surface-variant-color);">Password</p>
-                        <p class="m3-body-large mt-1" style="color: var(--on-surface-color);">••••••••</p>
+                        <div class="label m3-label-medium">Password</div>
+                        <div class="value m3-body-large">••••••••</div>
                     </div>
-                    <button id="change-password-btn" class="m3-text-button m3-label-small px-3 py-1 rounded-full">
-                        Change
-                    </button>
+                    <button id="change-password-btn" class="change-btn m3-label-small px-3 py-1 rounded-full">Change</button>
                 </div>
             </div>
 
@@ -377,7 +375,7 @@
                             <div>
                                 <label for="broker-select-profile" class="block m3-label-large mb-2" style="color: var(--on-surface-color);">Select Broker</label>
                                 <div class="relative">
-                                    <select id="broker-select-profile" class="w-full px-4 py-3 rounded-lg m3-body-large focus:outline-none focus:ring-2 transition-all appearance-none cursor-pointer" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-variant-color);">
+                                    <select id="broker-select-profile" class="w-full px-4 py-3 rounded-lg m3-body-large focus:outline-none focus:ring-2 transition-all appearance-none cursor-pointer input-variant">
                                         <option value="dhan">Dhan</option>
                                         <option value="zerodha">Zerodha</option>
                                         <option value="upstox">Upstox</option>
@@ -422,8 +420,7 @@
                                 <textarea 
                                     id="token-id-profile" 
                                     rows="3" 
-                                    class="w-full px-4 py-3 rounded-lg font-mono m3-body-medium resize-none focus:outline-none focus:ring-2 transition-all" 
-                                    style="background-color: var(--surface-variant-color); color: var(--on-surface-color); word-wrap: break-word; overflow-wrap: break-word; border: 1px solid var(--outline-variant-color);"
+                                    class="w-full px-4 py-3 rounded-lg font-mono m3-body-medium resize-none focus:outline-none focus:ring-2 transition-all input-variant" 
                                     placeholder="Paste your access token here..."
                                 ></textarea>
                             </div>
@@ -450,9 +447,9 @@
                     </div>
 
                     <!-- Security Info Card -->
-                    <div class="m3-card p-6 mt-6" style="background-color: var(--secondary-container-color);">
+                    <div class="m3-card p-6 mt-6 card-secondary">
                         <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: var(--on-secondary-container-color); opacity: 0.2;">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 icon-on-secondary">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-secondary-container-color);">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                                 </svg>
@@ -470,35 +467,35 @@
                 <section id="notifications-section" class="content-section hidden">
                     <div class="m3-card p-8 mb-6">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="m3-headline-medium" style="color: var(--on-surface-color);">Notifications</h2>
+                            <h2 class="m3-headline-medium text-on-surface">Notifications</h2>
                             <button class="m3-text-button m3-label-large px-4 py-2 rounded-full">Mark all as read</button>
                         </div>
 
                         <div class="space-y-4">
                             <!-- Notification Items -->
-                            <div class="p-4 rounded-lg" style="background-color: var(--surface-variant-color);">
+                            <div class="p-4 rounded-lg card-surface-variant">
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-start space-x-3">
-                                        <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: var(--primary-container-color);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--on-primary-container-color);">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center menu-icon-large icon-on-primary-container">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                                             </svg>
                                         </div>
                                         <div>
-                                            <h3 class="m3-title-medium mb-1" style="color: var(--on-surface-color);">Welcome to Alpha Z!</h3>
-                                            <p class="m3-body-medium mb-2" style="color: var(--on-surface-variant-color);">Get started by configuring your broker credentials in Settings.</p>
-                                            <p class="m3-body-small" style="color: var(--on-surface-variant-color);">Just now</p>
+                                            <h3 class="m3-title-medium mb-1 text-on-surface">Welcome to Alpha Z!</h3>
+                                            <p class="m3-body-medium mb-2 text-on-surface-variant">Get started by configuring your broker credentials in Settings.</p>
+                                            <p class="m3-body-small text-on-surface-variant">Just now</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="text-center py-12">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4" style="color: var(--on-surface-variant-color);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-on-surface-variant">
                                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                                 </svg>
-                                <p class="m3-body-large" style="color: var(--on-surface-variant-color);">You're all caught up!</p>
+                                <p class="m3-body-large text-on-surface-variant">You're all caught up!</p>
                             </div>
                         </div>
                     </div>
@@ -508,15 +505,16 @@
                 <!-- Shared Codes Section -->
                 <section id="shared-codes-section" class="content-section hidden">
                     <div class="m3-card p-8 mb-6">
+
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="m3-headline-medium" style="color: var(--on-surface-color);">Manage Shared Codes</h2>
+                            <h2 class="m3-headline-medium text-on-surface">Manage Shared Codes</h2>
                             <button class="m3-filled-button m3-label-large px-4 py-2 rounded-full">Share New Code</button>
                         </div>
 
-                        <p class="m3-body-large mb-6" style="color: var(--on-surface-variant-color);">Share your trading strategies with the community or collaborate with other traders.</p>
+                        <p class="m3-body-large mb-6 text-on-surface-variant">Share your trading strategies with the community or collaborate with other traders.</p>
 
                         <div class="text-center py-12">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4" style="color: var(--on-surface-variant-color);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-on-surface-variant">
                                 <polyline points="16 18 22 12 16 6"></polyline>
                                 <polyline points="8 6 2 12 8 18"></polyline>
                             </svg>
@@ -532,29 +530,29 @@
                 <section id="invoices-section" class="content-section hidden">
                     <div class="m3-card p-8 mb-6">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="m3-headline-medium" style="color: var(--on-surface-color);">Invoices & Billing</h2>
+                            <h2 class="m3-headline-medium text-on-surface">Invoices & Billing</h2>
                             <button class="m3-text-button m3-label-large px-4 py-2 rounded-full">Download All</button>
                         </div>
 
-                        <div class="mb-6 p-4 rounded-lg" style="background-color: var(--tertiary-container-color);">
+                        <div class="mb-6 p-4 rounded-lg bg-tertiary-container">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="m3-label-large" style="color: var(--on-tertiary-container-color);">Current Plan</p>
-                                    <p class="m3-headline-small mt-1" style="color: var(--on-tertiary-container-color);">Free Tier</p>
+                                    <p class="m3-label-large text-on-tertiary-container">Current Plan</p>
+                                    <p class="m3-headline-small mt-1 text-on-tertiary-container">Free Tier</p>
                                 </div>
                                 <button class="m3-filled-button m3-label-large px-6 py-2 rounded-full">Upgrade</button>
                             </div>
                         </div>
 
                         <div class="text-center py-12">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4" style="color: var(--on-surface-variant-color);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-on-surface-variant">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                 <polyline points="14 2 14 8 20 8"></polyline>
                                 <line x1="16" y1="13" x2="8" y2="13"></line>
                                 <line x1="16" y1="17" x2="8" y2="17"></line>
                             </svg>
-                            <p class="m3-headline-small mb-2" style="color: var(--on-surface-color);">No Invoices Yet</p>
-                            <p class="m3-body-medium" style="color: var(--on-surface-variant-color);">You're currently on the free plan. Upgrade to access premium features.</p>
+                            <p class="m3-headline-small mb-2 text-on-surface">No Invoices Yet</p>
+                            <p class="m3-body-medium text-on-surface-variant">You're currently on the free plan. Upgrade to access premium features.</p>
                         </div>
                     </div>
                 </section>
@@ -567,42 +565,42 @@
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <!-- Quick Links -->
-                            <div class="p-6 rounded-lg" style="background-color: var(--surface-variant-color);">
+                            <div class="p-6 rounded-lg bg-surface-variant">
                                 <div class="flex items-center space-x-3 mb-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                                         <line x1="12" y1="17" x2="12.01" y2="17"></line>
                                     </svg>
-                                    <h3 class="m3-title-large" style="color: var(--on-surface-color);">Help Center</h3>
+                                    <h3 class="m3-title-large text-on-surface">Help Center</h3>
                                 </div>
-                                <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Browse our comprehensive documentation and FAQs.</p>
+                                <p class="m3-body-medium mb-4 text-on-surface-variant">Browse our comprehensive documentation and FAQs.</p>
                                 <button class="m3-text-button m3-label-large">Visit Help Center →</button>
                             </div>
 
                             <div class="p-6 rounded-lg" style="background-color: var(--surface-variant-color);">
                                 <div class="flex items-center space-x-3 mb-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                                     </svg>
-                                    <h3 class="m3-title-large" style="color: var(--on-surface-color);">Live Chat</h3>
+                                    <h3 class="m3-title-large text-on-surface">Live Chat</h3>
                                 </div>
-                                <p class="m3-body-medium mb-4" style="color: var(--on-surface-variant-color);">Chat with our support team in real-time.</p>
+                                <p class="m3-body-medium mb-4 text-on-surface-variant">Chat with our support team in real-time.</p>
                                 <button class="m3-text-button m3-label-large">Start Chat →</button>
                             </div>
                         </div>
 
                         <!-- Contact Form -->
-                        <div class="p-6 rounded-lg" style="background-color: var(--surface-variant-color);">
-                            <h3 class="m3-title-large mb-4" style="color: var(--on-surface-color);">Send us a Message</h3>
+                        <div class="p-6 rounded-lg bg-surface-variant">
+                            <h3 class="m3-title-large mb-4 text-on-surface">Send us a Message</h3>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Subject</label>
-                                    <input type="text" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="How can we help?">
+                                    <label class="m3-label-large block mb-2 text-on-surface">Subject</label>
+                                    <input type="text" class="w-full px-4 py-3 rounded-lg m3-body-large outline-variant bg-surface" placeholder="How can we help?">
                                 </div>
                                 <div>
-                                    <label class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Message</label>
-                                    <textarea rows="4" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Describe your issue or question..."></textarea>
+                                    <label class="m3-label-large block mb-2 text-on-surface">Message</label>
+                                    <textarea rows="4" class="w-full px-4 py-3 rounded-lg m3-body-large outline-variant bg-surface" placeholder="Describe your issue or question..."></textarea>
                                 </div>
                                 <button class="m3-filled-button m3-label-large px-6 py-3 rounded-full">Send Message</button>
                             </div>
@@ -617,21 +615,21 @@
 
         <!-- Change Password Modal -->
         <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-            <div class="m3-card p-8 max-w-md w-full mx-4">
-                <h3 class="m3-title-large mb-6" style="color: var(--on-surface-color);">Change Password</h3>
+                <div class="m3-card p-8 max-w-md w-full mx-4">
+                <h3 class="m3-title-large mb-6 text-on-surface">Change Password</h3>
                 
                 <div class="space-y-4">
                     <div>
-                        <label for="current-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Current Password</label>
-                        <input type="password" id="current-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Enter current password">
+                        <label for="current-password" class="m3-label-large block mb-2 text-on-surface">Current Password</label>
+                        <input type="password" id="current-password" class="w-full px-4 py-3 rounded-lg m3-body-large outline-variant bg-surface-variant" placeholder="Enter current password">
                     </div>
                     <div>
-                        <label for="new-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">New Password</label>
-                        <input type="password" id="new-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Enter new password">
+                        <label for="new-password" class="m3-label-large block mb-2 text-on-surface">New Password</label>
+                        <input type="password" id="new-password" class="w-full px-4 py-3 rounded-lg m3-body-large outline-variant bg-surface-variant" placeholder="Enter new password">
                     </div>
                     <div>
-                        <label for="confirm-password" class="m3-label-large block mb-2" style="color: var(--on-surface-color);">Confirm New Password</label>
-                        <input type="password" id="confirm-password" class="w-full px-4 py-3 rounded-lg m3-body-large" style="background-color: var(--surface-variant-color); color: var(--on-surface-color); border: 1px solid var(--outline-color);" placeholder="Confirm new password">
+                        <label for="confirm-password" class="m3-label-large block mb-2 text-on-surface">Confirm New Password</label>
+                        <input type="password" id="confirm-password" class="w-full px-4 py-3 rounded-lg m3-body-large outline-variant bg-surface-variant" placeholder="Confirm new password">
                     </div>
                 </div>
 

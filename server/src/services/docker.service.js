@@ -129,11 +129,30 @@ async function stopStrategyContainer(containerId) {
     }
 }
 
+// Fetch logs for a container (non-following). Returns logs as a string.
+async function getContainerLogs(containerId) {
+    try {
+        const container = docker.getContainer(containerId);
+        // Retrieve both stdout and stderr
+        const logs = await container.logs({ stdout: true, stderr: true, timestamps: false, follow: false });
+        if (!logs) return '';
+        // logs may be a Buffer
+        return logs.toString('utf8');
+    } catch (error) {
+        // If container not found or logs retrieval fails, return empty string
+        if (error && error.statusCode !== 404) {
+            console.error(`Error fetching logs for container ${containerId}:`, error.message || error);
+        }
+        return '';
+    }
+}
+
 module.exports = {
     init,
     buildImage,
     runPythonCode,
     startStrategyContainer,
-    stopStrategyContainer
+    stopStrategyContainer,
+    getContainerLogs
 };
 

@@ -29,11 +29,15 @@ const strategyRunSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['success', 'error', 'stopped'],
+        enum: ['running', 'success', 'error', 'stopped'],
         required: true
     },
     executionTime: {
         type: Number, // milliseconds
+        required: false
+    },
+    stopTime: {
+        type: Date,
         required: false
     },
     errorMessage: {

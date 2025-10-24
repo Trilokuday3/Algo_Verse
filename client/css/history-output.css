@@ -1,0 +1,141 @@
+/* Styles specifically for history output modal */
+.output-modal-header {
+    background: var(--surface-color);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid rgba(124,58,237,0.08); /* subtle violet line */
+}
+.output-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.output-action-btn {
+    background: var(--surface-variant-color); /* pale violet pill */
+    border: 1px solid transparent;
+    color: var(--md-sys-color-primary); /* violet text */
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px; /* pill */
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: none;
+    transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.output-action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,0.06); }
+.output-action-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+.output-action-btn svg { color: currentColor; }
+
+/* Active action: subtle filled/violet border to indicate active */
+.output-action-btn[data-active="true"] {
+    background: rgba(124,58,237,0.12);
+    border-color: rgba(124,58,237,0.18);
+    color: var(--primary-color);
+}
+
+.log-wrapper {
+    display: block;
+    background-color: var(--surface-variant-color); /* pale-lavender outer */
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: calc(80vh - 120px);
+    padding: 12px; /* space around inner white box */
+}
+
+/* New row-based layout: each .log-row contains the number and the content so multi-line wraps keep the number aligned */
+.log-rows {
+    display: block;
+    background: var(--surface-color);
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-sizing: border-box;
+    padding: 18px;
+    max-height: calc(80vh - 200px);
+    overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+    position: relative;
+}
+.log-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 2px 0;
+}
+.log-line-number {
+    width: 56px; /* fixed gutter width */
+    text-align: right;
+    padding-right: 12px;
+    color: var(--primary-color);
+    font-size: 13px;
+    line-height: 1.6;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.log-line {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--on-surface-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Search input styling to match pasted image */
+#modal-log-search {
+    background: var(--surface-color);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 0.75rem 1rem 0.75rem 3.25rem;
+    border-radius: 999px;
+    box-shadow: none;
+    color: var(--on-surface-variant-color);
+}
+
+#modal-log-search::placeholder { color: var(--on-surface-variant-color); opacity: 0.6; }
+
+/* subtle vertical accent on the left of the log area (applies to rows container) */
+.log-rows::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 18px;
+    bottom: 18px;
+    width: 8px;
+    background: rgba(16,185,129,0.08);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Close button and header text adjustments for light background */
+.m3-text-button { color: var(--on-surface-variant-color); }
+.output-modal-header h2, .output-modal-header p, #modal-title, #modal-subtitle { color: var(--on-surface-variant-color); }
+
+/* Ensure modal card uses surface color even in dark mode */
+#output-modal > div {
+    background-color: var(--surface-color) !important;
+    color: var(--on-surface-color) !important;
+}
+
+.log-line { display: block; }
+
+.log-highlight { background: rgba(255,255,255,0.04); }
+
+.search-highlight { background: rgba(255,230,0,0.12); color: #000; }
+
+/* Footer styles */
+.modal-footer { background: transparent; }
+.modal-footer .w-2 { width: 0.5rem; height: 0.5rem; }
+.modal-footer span { font-weight: 600; }
+
+.modal-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: white;
+}
