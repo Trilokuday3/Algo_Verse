@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Test - Account Dropdown</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body data-page="dashboard">
+    <div id="main-header"></div>
+                                <span>⚙️ Broker Settings</span>
+                            </a>
+                        </div>
+                        
+                        <div class="my-3" style="border-top: 1px solid var(--outline-variant-color);"></div>
+                        
+                        <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl w-full text-left hover:bg-red-50" style="color: var(--error-color);">
+                            <span>🚪 Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-4">Dropdown Test</h1>
+        <p>Click the account button (T) in the header to test the dropdown.</p>
+        <p class="mt-2">You should see:</p>
+        <ul class="list-disc ml-6 mt-2">
+            <li>Profile Settings</li>
+            <li>Broker Settings</li>
+            <li>Logout (with red divider above)</li>
+        </ul>
+    </main>
+    
+    <script src="./js/main.js"></script>
+</body>
+<script>
+// Dynamically load the shared header
+fetch('components/header.html')
+    .then(res => res.text())
+    .then(html => {
+        document.getElementById('main-header').innerHTML = html;
+    });
+</script>
+</html>

@@ -90,10 +90,11 @@ body {
 
 /* Material You Component Styles */
 .m3-top-app-bar {
-    background-color: color-mix(in srgb, var(--surface-color) 80%, transparent);
+    /* background-color and border removed to allow Tailwind dark mode classes to work */
+    /* background-color: color-mix(in srgb, var(--surface-color) 80%, transparent); */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px); /* For Safari */
-    border-bottom: 1px solid color-mix(in srgb, var(--outline-color), transparent 70%);
+    /* border-bottom: 1px solid color-mix(in srgb, var(--outline-color), transparent 70%); */
 }
 
 .m3-filled-button {

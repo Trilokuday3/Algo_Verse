@@ -1,6 +1,10 @@
 // This function runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
+    initializeHeader();
+});
 
+// Expose this function globally so it can be called after dynamically loading header
+window.initializeHeader = function() {
     // --- Theme Toggle Logic ---
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeIconLight = document.getElementById('theme-icon-light');
@@ -13,14 +17,49 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} theme - The theme to apply ('dark' or 'light').
      */
     const applyTheme = (theme) => {
+        const header = document.querySelector('.m3-top-app-bar');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const logoText = document.querySelector('.m3-title-large');
+        const themeToggle = document.getElementById('theme-toggle');
+        
         if (theme === 'dark') {
             htmlElement.classList.add('dark');
+            // Update header background for dark mode
+            if (header) {
+                header.style.backgroundColor = 'rgba(17, 24, 39, 0.95)';
+                header.style.borderBottom = '1px solid rgb(55, 65, 81)';
+            }
+            // Update text colors for dark mode
+            if (logoText) {
+                logoText.style.color = 'rgb(243, 244, 246)'; // gray-100
+            }
+            navLinks.forEach(link => {
+                link.style.color = 'rgb(209, 213, 219)'; // gray-300
+            });
+            if (themeToggle) {
+                themeToggle.style.color = 'rgb(209, 213, 219)'; // gray-300
+            }
             if (themeIconLight && themeIconDark) {
                 themeIconLight.classList.add('hidden');
                 themeIconDark.classList.remove('hidden');
             }
         } else {
             htmlElement.classList.remove('dark');
+            // Update header background for light mode
+            if (header) {
+                header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                header.style.borderBottom = '1px solid rgb(229, 231, 235)';
+            }
+            // Update text colors for light mode
+            if (logoText) {
+                logoText.style.color = 'rgb(17, 24, 39)'; // gray-900
+            }
+            navLinks.forEach(link => {
+                link.style.color = 'rgb(55, 65, 81)'; // gray-700
+            });
+            if (themeToggle) {
+                themeToggle.style.color = 'rgb(55, 65, 81)'; // gray-700
+            }
             if (themeIconLight && themeIconDark) {
                 themeIconLight.classList.remove('hidden');
                 themeIconDark.classList.add('hidden');
@@ -84,6 +123,5 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         });
     }
-
-});
+};
 

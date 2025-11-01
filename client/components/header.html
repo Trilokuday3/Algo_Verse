@@ -1,0 +1,153 @@
+<!-- Clean, modern header with accessible dropdown -->
+<header class="m3-top-app-bar fixed top-0 left-0 w-full z-40 backdrop-blur-sm shadow-sm" style="background-color: rgba(255, 255, 255, 0.95) !important; border-bottom: 1px solid rgb(229, 231, 235) !important;">
+    <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500">
+                <span class="text-2xl font-bold text-white">α</span>
+            </div>
+            <span class="m3-title-large font-semibold text-gray-900 dark:text-gray-100">Alpha Z</span>
+        </a>
+        <!-- Navigation Links -->
+        <div class="hidden md:flex items-center space-x-2">
+            <a href="dashboard.html" data-page="dashboard" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Dashboard</a>
+            <a href="strategies.html" data-page="strategies" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">My Strategies</a>
+            <a href="terminal.html" data-page="terminal" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Terminal</a>
+            <a href="history.html" data-page="history" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">History</a>
+            <a href="profile.html#broker-section" data-page="profile" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Broker Connection</a>
+        </div>
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-3">
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-800 transition-all text-gray-700 dark:text-gray-300" aria-label="Toggle dark mode" type="button">
+                <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <!-- Account Dropdown -->
+            <div class="relative">
+                <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none transition-all hover:scale-105 bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-md" aria-label="Account Menu" aria-haspopup="true" aria-expanded="false" aria-controls="account-dropdown">
+                    <span id="account-icon" class="font-bold text-lg">A</span>
+                </button>
+                <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg" role="menu" aria-labelledby="account-button">
+                    <div class="p-4 space-y-1 text-gray-900 dark:text-gray-100">
+                        <!-- Account Info (not clickable) -->
+                        <div class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 w-full text-left cursor-default select-none">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white">
+                                <span id="dropdown-avatar-text">A</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p id="dropdown-name" class="m3-title-medium font-semibold truncate">Account</p>
+                                <p id="dropdown-email" class="m3-body-small mt-0.5 truncate">No email</p>
+                            </div>
+                        </div>
+                        <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+                        <!-- Profile Option -->
+                        <a href="profile.html#profile-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-gray-200 dark:hover:bg-gray-700 w-full text-left no-underline" role="menuitem" tabindex="0" data-action="profile">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 dark:bg-green-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
+                            </div>
+                            <span class="font-semibold">Profile</span>
+                        </a>
+                        <!-- Broker Settings Option -->
+                        <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-blue-100 dark:hover:bg-blue-900 w-full text-left no-underline" role="menuitem" tabindex="0" data-action="broker-settings">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-100 dark:bg-blue-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.22.65.22 1v.09A1.65 1.65 0 0 0 21 12c0 .35-.08.69-.22 1z"/></svg>
+                            </div>
+                            <span class="font-semibold">Broker Settings</span>
+                        </a>
+                        <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+                        <!-- Logout Button -->
+                        <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-red-100 dark:hover:bg-red-900 w-full text-left header-logout-btn" role="menuitem" tabindex="0" data-action="logout">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-red-100 dark:bg-red-800">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                            </div>
+                            <span class="font-semibold text-error">Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+                        <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:opacity-80 transition-opacity" aria-label="Toggle dark mode">
+                            <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                            <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </button>
+                        <!-- Account Dropdown -->
+                        <div class="relative">
+                            <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none transition-all hover:scale-105 bg-gradient-to-br from-indigo-500 to-purple-500 text-white" aria-label="Account Menu" aria-haspopup="true" aria-expanded="false" aria-controls="account-dropdown">
+                                <span id="account-icon" class="font-bold text-lg">A</span>
+                            </button>
+                            <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg" role="menu" aria-labelledby="account-button">
+                                <div class="p-4 space-y-1 text-gray-900 dark:text-gray-100">
+                                    <!-- Account Info (not clickable) -->
+                                    <div class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 w-full text-left cursor-default select-none">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white">
+                                            <span id="dropdown-avatar-text">A</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p id="dropdown-name" class="m3-title-medium font-semibold truncate">Account</p>
+                                            <p id="dropdown-email" class="m3-body-small mt-0.5 truncate">No email</p>
+                                        </div>
+                                    </div>
+                                    <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+                                    <!-- Profile Option -->
+                                    <a href="profile.html#profile-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-gray-200 dark:hover:bg-gray-700 w-full text-left no-underline" role="menuitem" tabindex="0" data-action="profile">
+                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-100 dark:bg-green-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
+                                        </div>
+                                        <span class="font-semibold">Profile</span>
+                                    </a>
+                                    <!-- Broker Settings Option -->
+                                    <a href="profile.html#broker-section" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-blue-100 dark:hover:bg-blue-900 w-full text-left no-underline" role="menuitem" tabindex="0" data-action="broker-settings">
+                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-100 dark:bg-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.22.65.22 1v.09A1.65 1.65 0 0 0 21 12c0 .35-.08.69-.22 1z"/></svg>
+                                        </div>
+                                        <span class="font-semibold">Broker Settings</span>
+                                    </a>
+                                    <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
+                                    <!-- Logout Button -->
+                                    <button id="logout-btn" class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all hover:bg-red-100 dark:hover:bg-red-900 w-full text-left header-logout-btn" role="menuitem" tabindex="0" data-action="logout">
+                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-red-100 dark:bg-red-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                                <polyline points="16 17 21 12 16 7"></polyline>
+                                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                                            </svg>
+                                        </div>
+                                        <span class="font-semibold text-error">Logout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </header>
