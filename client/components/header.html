@@ -1,25 +1,110 @@
 <!-- Clean, modern header with accessible dropdown -->
-<header class="m3-top-app-bar fixed top-0 left-0 w-full z-40 backdrop-blur-sm shadow-sm" style="background-color: rgba(255, 255, 255, 0.95) !important; border-bottom: 1px solid rgb(229, 231, 235) !important;">
+<style>
+    /* Force header background colors to work properly */
+    header.m3-top-app-bar {
+        background-color: white !important;
+        border-bottom: 1px solid rgb(229, 231, 235) !important;
+    }
+    
+    html.dark header.m3-top-app-bar {
+        background-color: rgb(17, 24, 39) !important;
+        border-bottom: 1px solid rgb(31, 41, 55) !important;
+    }
+    
+    /* Force text colors in header for light mode */
+    header.m3-top-app-bar .m3-title-large {
+        color: #1a1a1a !important;
+    }
+    
+    header.m3-top-app-bar .nav-link {
+        color: #7c3aed !important;
+    }
+    
+    /* Active/selected link should be white with purple background */
+    header.m3-top-app-bar .nav-link.active-nav-link,
+    header.m3-top-app-bar .nav-link.\!text-white,
+    header.m3-top-app-bar .nav-link.\!bg-violet-600 {
+        color: white !important;
+        background-color: rgb(124, 58, 237) !important;
+    }
+    
+    /* Dark mode text colors */
+    html.dark header.m3-top-app-bar .m3-title-large {
+        color: white !important;
+    }
+    
+    html.dark header.m3-top-app-bar .nav-link {
+        color: rgb(209, 213, 219) !important;
+    }
+    
+    /* Dark mode active link - deeper purple for better contrast */
+    html.dark header.m3-top-app-bar .nav-link.active-nav-link,
+    html.dark header.m3-top-app-bar .nav-link.\!text-white,
+    html.dark header.m3-top-app-bar .nav-link.\!bg-violet-600 {
+        color: rgb(78, 73, 142) !important;
+        background-color: #D9C6FF !important;
+    }
+    
+    /* Theme toggle button colors */
+    header.m3-top-app-bar #theme-toggle {
+        color: #1a1a1a !important;
+    }
+    
+    html.dark header.m3-top-app-bar #theme-toggle {
+        color: rgb(209, 213, 219) !important;
+    }
+    
+    /* Logo gradient colors - changes based on theme */
+    header.m3-top-app-bar .logo-gradient {
+        background: #7c3aed !important;
+    }
+    
+    html.dark header.m3-top-app-bar .logo-gradient {
+        background: #D9C6FF !important;
+    }
+    
+    /* Account button gradient colors - changes based on theme */
+    header.m3-top-app-bar .account-gradient {
+        background: #7c3aed !important;
+    }
+    
+    html.dark header.m3-top-app-bar .account-gradient {
+        background: #D9C6FF !important;
+    }
+    
+    /* Alpha symbol and account letter text color - white in light mode */
+    header.m3-top-app-bar .logo-gradient span,
+    header.m3-top-app-bar .account-gradient span {
+        color: white !important;
+    }
+    
+    /* Alpha symbol and account letter text color - dark indigo in dark mode */
+    html.dark header.m3-top-app-bar .logo-gradient span,
+    html.dark header.m3-top-app-bar .account-gradient span {
+        color: #3730A3 !important;
+    }
+</style>
+<header class="m3-top-app-bar fixed top-0 left-0 w-full z-40 shadow-sm bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
     <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
         <!-- Logo -->
         <a href="index.html" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500">
-                <span class="text-2xl font-bold text-white">α</span>
+            <div class="w-10 h-10 rounded-full flex items-center justify-center logo-gradient">
+                <span class="text-2xl font-bold">α</span>
             </div>
             <span class="m3-title-large font-semibold text-gray-900 dark:text-gray-100">Alpha Z</span>
         </a>
         <!-- Navigation Links -->
         <div class="hidden md:flex items-center space-x-2">
-            <a href="dashboard.html" data-page="dashboard" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Dashboard</a>
-            <a href="strategies.html" data-page="strategies" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">My Strategies</a>
-            <a href="terminal.html" data-page="terminal" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Terminal</a>
-            <a href="history.html" data-page="history" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">History</a>
-            <a href="profile.html#broker-section" data-page="profile" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Broker Connection</a>
+            <a href="dashboard.html" data-page="dashboard" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Dashboard</a>
+            <a href="strategies.html" data-page="strategies" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">My Strategies</a>
+            <a href="terminal.html" data-page="terminal" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Terminal</a>
+            <a href="history.html" data-page="history" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">History</a>
+            <a href="profile.html#broker-section" data-page="profile" class="nav-link m3-label-large px-4 py-2 rounded-full transition-all text-gray-900 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Broker Connection</a>
         </div>
         <!-- Right Side Actions -->
         <div class="flex items-center space-x-3">
             <!-- Theme Toggle Button -->
-            <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-800 transition-all text-gray-700 dark:text-gray-300" aria-label="Toggle dark mode" type="button">
+            <button id="theme-toggle" class="w-10 h-10 rounded-full flex items-center justify-center focus:outline-none hover:bg-gray-100 dark:hover:bg-gray-800 transition-all text-gray-900 dark:text-gray-300" aria-label="Toggle dark mode" type="button">
                 <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5"></circle>
                     <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -37,14 +122,14 @@
             </button>
             <!-- Account Dropdown -->
             <div class="relative">
-                <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none transition-all hover:scale-105 bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-md" aria-label="Account Menu" aria-haspopup="true" aria-expanded="false" aria-controls="account-dropdown">
+                <button id="account-button" class="w-11 h-11 rounded-full flex items-center justify-center focus:outline-none transition-all hover:scale-105 account-gradient shadow-md" aria-label="Account Menu" aria-haspopup="true" aria-expanded="false" aria-controls="account-dropdown">
                     <span id="account-icon" class="font-bold text-lg">A</span>
                 </button>
                 <div id="account-dropdown" class="absolute right-0 mt-3 w-80 rounded-2xl hidden z-50 animate-fade-in bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg" role="menu" aria-labelledby="account-button">
                     <div class="p-4 space-y-1 text-gray-900 dark:text-gray-100">
                         <!-- Account Info (not clickable) -->
                         <div class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 w-full text-left cursor-default select-none">
-                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl account-gradient">
                                 <span id="dropdown-avatar-text">A</span>
                             </div>
                             <div class="flex-1 min-w-0">
