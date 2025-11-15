@@ -12,8 +12,20 @@ function init(socketIoInstance) {
 }
 
 async function buildImage() {
-    console.log(`Building Docker image: ${imageName}...`);
+    console.log(`Checking for Docker image: ${imageName}...`);
     try {
+        // Check if image already exists
+        const images = await docker.listImages();
+        const imageExists = images.some(img => 
+            img.RepoTags && img.RepoTags.includes(`${imageName}:latest`)
+        );
+        
+        if (imageExists) {
+            console.log(`✓ Docker image ${imageName}:latest already exists. Skipping build.`);
+            return;
+        }
+        
+        console.log(`Building Docker image: ${imageName}...`);
         const stream = await docker.buildImage({
             context: path.join(__dirname, '..', '..', '..', 'algo-runner'),
             src: ['Dockerfile', 'requirements.txt', 'Tradehull_V2.py']
@@ -21,7 +33,7 @@ async function buildImage() {
         await new Promise((resolve, reject) => {
             docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
         });
-        console.log("Image built successfully.");
+        console.log("✓ Image built successfully.");
     } catch (error) {
         console.error("Error building Docker image:", error);
         throw error;

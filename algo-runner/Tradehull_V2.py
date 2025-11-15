@@ -48,6 +48,9 @@ class Tradehull:
         self.logger.info("STARTED THE PROGRAM")
 
         try:
+            # Initialize attributes before get_login to prevent AttributeError
+            self.response = None
+            self.instrument_df = pd.DataFrame()
             self.status 							= dict()
             self.token_and_exchange 				= dict()
             self.get_login(ClientCode,token_id)
@@ -86,8 +89,55 @@ class Tradehull:
             traceback.print_exc()
 
     def get_instrument_file(self):
+        import requests
+        import os
         global instrument_df
         current_date = time.strftime("%Y-%m-%d")
+        
+        # Try to download with retry logic
+        url = "https://images.dhan.co/api-data/api-scrip-master.csv"
+        max_retries = 3
+        
+        for attempt in range(max_retries):
+            try:
+                print(f"Attempt {attempt + 1}: Downloading instrument file from {url}")
+                response = requests.get(url, timeout=10)
+                response.raise_for_status()
+                
+                # Save to local cache
+                cache_dir = "Dependencies"
+                os.makedirs(cache_dir, exist_ok=True)
+                cache_file = os.path.join(cache_dir, f"instrument_cache_{current_date}.csv")
+                
+                with open(cache_file, 'wb') as f:
+                    f.write(response.content)
+                
+                print(f"Successfully downloaded and cached instrument file")
+                instrument_df = pd.read_csv(cache_file, low_memory=False)
+                return instrument_df
+                
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed: {e}")
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                    print(f"Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                else:
+                    print(f"All {max_retries} attempts failed. Trying local cache...")
+        
+        # Fallback to most recent cached file
+        cache_dir = "Dependencies"
+        if os.path.exists(cache_dir):
+            cache_files = [f for f in os.listdir(cache_dir) if f.startswith("instrument_cache_")]
+            if cache_files:
+                latest_cache = sorted(cache_files)[-1]
+                cache_path = os.path.join(cache_dir, latest_cache)
+                print(f"Using cached instrument file: {cache_path}")
+                instrument_df = pd.read_csv(cache_path, low_memory=False)
+                return instrument_df
+        
+        print("ERROR: No network connection and no cache available")
+        # Return empty DataFrame as last resort
         expected_file = 'all_instrument ' + str(current_date) + '.csv'
         for item in os.listdir("Dependencies"):
             path = os.path.join(item)

@@ -5,6 +5,12 @@ const { encrypt, decrypt } = require('../services/crypto.service');
 const saveCredentials = async (req, res) => {
     const { clientId, accessToken, brokerUsername, brokerPassword, totpSecret, broker, apiKey, apiSecret } = req.body;
     
+    console.log('💾 Save Credentials Request:');
+    console.log('User ID:', req.userId);
+    console.log('Broker:', broker);
+    console.log('ClientId provided:', !!clientId, 'Length:', clientId?.length || 0);
+    console.log('AccessToken provided:', !!accessToken, 'Length:', accessToken?.length || 0);
+    
     try {
         // Validate broker is provided
         if (!broker) {
@@ -21,6 +27,22 @@ const saveCredentials = async (req, res) => {
         
         // Normalize broker name to lowercase
         const normalizedBroker = broker.toLowerCase();
+        
+        // Validate required fields for Dhan broker
+        if (normalizedBroker === 'dhan') {
+            if (!clientId || clientId.trim() === '') {
+                console.log('❌ Validation failed: Client ID is empty');
+                return res.status(400).json({ 
+                    message: 'Client ID is required for Dhan broker.' 
+                });
+            }
+            if (!accessToken || accessToken.trim() === '') {
+                console.log('❌ Validation failed: Access Token is empty');
+                return res.status(400).json({ 
+                    message: 'Access Token is required for Dhan broker.' 
+                });
+            }
+        }
         
         const Credentials = getCredentialsModel();
         
@@ -54,12 +76,16 @@ const saveCredentials = async (req, res) => {
             apiSecret: apiSecret ? encrypt(apiSecret) : ''
         };
         
+        console.log('✅ Encrypting and saving credentials for user:', req.userId);
+        
         // Upsert: update if broker exists for user, create if new broker
-        await Credentials.findOneAndUpdate(
+        const result = await Credentials.findOneAndUpdate(
             { userId: req.userId, broker: normalizedBroker },
             credentialData,
             { upsert: true, new: true }
         );
+        
+        console.log('✅ Credentials saved successfully. Document ID:', result._id);
         
         res.json({ 
             message: existingBroker 

@@ -169,12 +169,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Status badge mapping
         let statusColor = 'var(--md-sys-color-primary)';
         let statusText = 'Success';
+        let statusTextColor = 'white';
         if (run.status === 'error') {
             statusColor = 'var(--md-sys-color-error)';
             statusText = 'Error';
+            statusTextColor = 'white';
         } else if (run.status === 'running') {
             statusColor = 'var(--primary-color)';
             statusText = 'Running';
+            statusTextColor = 'white';
+        } else if (run.status === 'stopped') {
+            statusColor = '#D9C6FF'; // Light purple matching Alpha background
+            statusText = 'Stopped';
+            statusTextColor = '#7c3aed';
         }
         const brokerName = {
             'dhan': 'Dhan',
@@ -188,7 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="flex-1">
                     <div class="flex items-center space-x-3 mb-2">
                         <h3 class="m3-title-large font-semibold">${run.strategyName}</h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background-color: ${statusColor}; color: white;">${statusText}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background-color: ${statusColor}; color: ${statusTextColor};">${statusText}</span>
                     </div>
                     <div class="flex items-center space-x-4 text-sm" style="color: var(--on-surface-variant-color);">
                         <div class="flex items-center space-x-1">
@@ -217,13 +224,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                     ${run.errorMessage ? `<p class="mt-2 text-sm" style="color: var(--md-sys-color-error);">Error: ${run.errorMessage}</p>` : ''}
                 </div>
-                <button class="ml-4 px-4 py-2 rounded-lg transition-all hover:bg-gray-500/10" style="border: 1px solid var(--outline-color);">
-                    View Output
-                </button>
+                <div class="ml-4 flex items-center space-x-2">
+                    <button class="view-output-btn px-4 py-2 rounded-lg transition-all hover:bg-gray-500/10" style="border: 1px solid var(--outline-color);">
+                        View Output
+                    </button>
+                    <button class="delete-run-btn w-10 h-10 rounded-lg transition-all hover:bg-red-500/10 flex items-center justify-center" style="border: 1px solid var(--md-sys-color-error); color: var(--md-sys-color-error);" title="Delete this run">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         `;
 
-        card.addEventListener('click', () => showOutput(run));
+        // Add event listeners
+        const viewOutputBtn = card.querySelector('.view-output-btn');
+        const deleteRunBtn = card.querySelector('.delete-run-btn');
+        
+        viewOutputBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showOutput(run);
+        });
+        
+        deleteRunBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (confirm(`Are you sure you want to delete this run?\n\nStrategy: ${run.strategyName}\nStart: ${startStr}`)) {
+                await deleteRun(run._id);
+            }
+        });
+        
         return card;
     }
 
@@ -415,6 +445,71 @@ document.addEventListener('DOMContentLoaded', async () => {
         brokerFilter.value = '';
         statusFilter.value = '';
         applyFilters();
+    });
+
+    // Delete single run
+    async function deleteRun(runId) {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:3000/api/strategy/history/${runId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete run');
+            }
+
+            // Remove from allHistory and filteredHistory
+            allHistory = allHistory.filter(run => run._id !== runId);
+            filteredHistory = filteredHistory.filter(run => run._id !== runId);
+            
+            // Re-render the display
+            displayedCount = 0;
+            displayHistory();
+            
+            alert('Run deleted successfully!');
+        } catch (error) {
+            console.error('Error deleting run:', error);
+            alert('Failed to delete run. Please try again.');
+        }
+    }
+
+    // Clear all history
+    const clearAllHistoryBtn = document.getElementById('clear-all-history');
+    clearAllHistoryBtn.addEventListener('click', async () => {
+        if (!confirm(`Are you sure you want to delete ALL run history?\n\nThis will permanently delete ${allHistory.length} run(s) and cannot be undone!`)) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/api/strategy/history/all', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to clear history');
+            }
+
+            // Clear local data
+            allHistory = [];
+            filteredHistory = [];
+            displayedCount = 0;
+            
+            // Clear the display
+            historyContainer.innerHTML = '<div class="text-center py-12"><p class="m3-body-large" style="color: var(--on-surface-variant-color);">No run history found.</p></div>';
+            
+            alert('All history cleared successfully!');
+        } catch (error) {
+            console.error('Error clearing history:', error);
+            alert('Failed to clear history. Please try again.');
+        }
     });
 
     // Load more

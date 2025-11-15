@@ -236,6 +236,19 @@ const startStrategy = async (req, res) => {
         const decryptedClientId = decrypt(credentials.clientId);
         const decryptedAccessToken = decrypt(credentials.accessToken);
         
+        // Validate decrypted values are not empty
+        if (!decryptedClientId || decryptedClientId.trim() === '') {
+            return res.status(400).json({ 
+                message: `Client ID is missing for ${strategy.broker}. Please update your credentials in the Profile page.` 
+            });
+        }
+        
+        if (!decryptedAccessToken || decryptedAccessToken.trim() === '') {
+            return res.status(400).json({ 
+                message: `Access Token is missing for ${strategy.broker}. Please update your credentials in the Profile page.` 
+            });
+        }
+        
         // Start Docker container with broker-specific credentials
         const containerId = await dockerService.runStrategy(
             strategy.code,

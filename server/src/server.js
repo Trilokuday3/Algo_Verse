@@ -69,6 +69,12 @@ app.post('/api/auth/login-or-register', async (req, res) => {
 app.post('/api/credentials', authMiddleware, async (req, res) => {
     const { clientId, accessToken, brokerUsername, brokerPassword, totpSecret, broker, apiKey, apiSecret } = req.body;
     
+    console.log('💾 CREDENTIAL SAVE REQUEST RECEIVED:');
+    console.log('User ID:', req.userId);
+    console.log('Broker:', broker);
+    console.log('ClientId:', clientId ? `${clientId.substring(0, 5)}...` : 'EMPTY');
+    console.log('AccessToken:', accessToken ? `${accessToken.substring(0, 20)}...` : 'EMPTY');
+    
     try {
         // Validate broker is provided
         if (!broker) {
@@ -119,11 +125,14 @@ app.post('/api/credentials', authMiddleware, async (req, res) => {
         };
         
         // Upsert: update if broker exists for user, create if new broker
-        await Credentials.findOneAndUpdate(
+        const result = await Credentials.findOneAndUpdate(
             { userId: req.userId, broker: normalizedBroker },
             credentialData,
             { upsert: true, new: true }
         );
+        
+        console.log('✅ Credentials saved to database! Document ID:', result._id);
+        console.log('Document userId:', result.userId);
         
         res.json({ 
             message: existingBroker 
@@ -461,8 +470,8 @@ app.post('/api/strategies/:strategyId/stop', authMiddleware, async (req, res) =>
                 if (containerLogs) {
                     runToUpdate.terminalOutput += `\n\n=== Container Logs ===\n${containerLogs}`;
                 }
-                // Per UX decision: mark manual stops as 'error' so UI shows Error badge
-                runToUpdate.status = 'error';
+                // Mark manual stops as 'stopped' (successful execution, user-initiated stop)
+                runToUpdate.status = 'stopped';
                 // Calculate execution time using createdAt
                 const startedAt = new Date(runToUpdate.createdAt).getTime();
                 runToUpdate.executionTime = Date.now() - startedAt;
@@ -477,7 +486,7 @@ app.post('/api/strategies/:strategyId/stop', authMiddleware, async (req, res) =>
                     strategyName: strategy.name,
                     broker: strategy.broker || 'dhan',
                     terminalOutput: `Strategy "${strategy.name}" has been stopped.\nStatus: Stopped\n\nThe strategy was running in a background container and has been terminated.` + (containerLogs ? `\n\n=== Container Logs ===\n${containerLogs}` : ''),
-                    status: 'error',
+                    status: 'stopped',
                     executionTime: 0,
                     stopTime: new Date()
                 });
@@ -678,6 +687,61 @@ app.get('/api/strategy/:strategyId/history', authMiddleware, async (req, res) =>
         res.status(500).json({ error: error.message });
     }
 });
+
+// --- Clear All Run History (Protected) ---
+// NOTE: This route MUST come BEFORE the /:runId route to avoid "all" being treated as an ID
+app.delete('/api/strategy/history/all', authMiddleware, async (req, res) => {
+    try {
+        const { getStrategyRunModel } = require('./models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        
+        const result = await StrategyRun.deleteMany({ userId: req.userId });
+        
+        res.json({ 
+            success: true, 
+            message: `Deleted ${result.deletedCount} run(s) successfully.`,
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        console.error("Error clearing run history:", error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
+
+// --- Delete Single Run History (Protected) ---
+app.delete('/api/strategy/history/:runId', authMiddleware, async (req, res) => {
+    try {
+        const { getStrategyRunModel } = require('./models/StrategyRun.model');
+        const StrategyRun = getStrategyRunModel();
+        
+        const result = await StrategyRun.findOneAndDelete({ 
+            _id: req.params.runId,
+            userId: req.userId 
+        });
+        
+        if (!result) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Run not found or unauthorized.' 
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            message: 'Run deleted successfully.' 
+        });
+    } catch (error) {
+        console.error("Error deleting run history:", error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
+
 
 // --- Dashboard Data Route (Protected) ---
 app.get('/api/dashboard', authMiddleware, async (req, res) => {
