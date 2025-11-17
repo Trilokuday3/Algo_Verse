@@ -65,7 +65,11 @@ except Exception as e:
             Image: imageName,
             Cmd: ['python', '-c', fullCode],
             Tty: false,
-            HostConfig: { AutoRemove: true },
+            HostConfig: { 
+                AutoRemove: true,
+                Dns: ['8.8.8.8', '8.8.4.4', '1.1.1.1'],
+                NetworkMode: 'bridge'
+            },
         });
         const containerStream = await container.attach({ stream: true, stdout: true, stderr: true });
         container.modem.demuxStream(containerStream, logStream, logStream);
@@ -111,7 +115,11 @@ except Exception as e:
         Image: imageName,
         Cmd: ['python', '-u', '-c', fullCode],
         Tty: false,
-        name: containerName
+        name: containerName,
+        HostConfig: {
+            Dns: ['8.8.8.8', '8.8.4.4', '1.1.1.1'],
+            NetworkMode: 'bridge'
+        }
     });
     await container.start();
     const logStream = await container.logs({ follow: true, stdout: true, stderr: true });

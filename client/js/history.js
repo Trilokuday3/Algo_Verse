@@ -1,5 +1,4 @@
-// Use the API_BASE_URL from the global configuration
-const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000';
+// API_BASE_URL is defined in api.js which is loaded before this file
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Update account icon with user's email initial
@@ -70,6 +69,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchHistory() {
         try {
             const token = localStorage.getItem('token');
+            
+            if (!token) {
+                console.error('❌ No auth token found');
+                throw new Error('Not logged in. Please log in first.');
+            }
+            
+            console.log('📡 Fetching history from:', `${API_BASE_URL}/api/strategy/history/all`);
+            
             const response = await fetch(`${API_BASE_URL}/api/strategy/history/all?limit=200`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -81,16 +88,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('API Error:', errorText);
+                
+                // If unauthorized, redirect to login
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
                 throw new Error(`Failed to fetch history: ${response.status}`);
             }
             
             const data = await response.json();
-            console.log('API Response:', data);
+            console.log('✅ API Response:', data);
             
             allHistory = data.runs || [];
             filteredHistory = [...allHistory];
             
-            console.log('Total history items:', allHistory.length);
+            console.log('📊 Total history items:', allHistory.length);
             
             // Populate strategy filter
             const strategies = [...new Set(allHistory.map(h => h.strategyName))];
