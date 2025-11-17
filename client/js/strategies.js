@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- 2. Connect to the WebSocket Server ---
-    const socket = io('http://localhost:3000');
+    const WS_URL = window.APP_CONFIG?.WS_URL || 'http://localhost:3000';
+    const socket = io(WS_URL);
     socket.on('connect', () => {
         console.log('Connected to WebSocket server!');
     });

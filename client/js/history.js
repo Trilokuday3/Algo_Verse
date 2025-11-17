@@ -1,3 +1,6 @@
+// Use the API_BASE_URL from the global configuration
+const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000';
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Update account icon with user's email initial
     await updateAccountIcon();
@@ -67,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchHistory() {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3000/api/strategy/history/all?limit=200', {
+            const response = await fetch(`${API_BASE_URL}/api/strategy/history/all?limit=200`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -451,7 +454,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function deleteRun(runId) {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3000/api/strategy/history/${runId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/strategy/history/${runId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -486,7 +489,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3000/api/strategy/history/all', {
+            const response = await fetch(`${API_BASE_URL}/api/strategy/history/all`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

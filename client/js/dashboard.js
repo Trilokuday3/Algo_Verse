@@ -1,3 +1,6 @@
+// Use the API_BASE_URL from the global configuration
+const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000';
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Update account icon with user's email initial
     await updateAccountIcon();
@@ -55,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadHoldings() {
         try {
             console.log('📊 Loading holdings from Dhan...');
-            const response = await fetch(`http://localhost:3000/api/broker/portfolio/holdings?broker=dhan`, {
+            const response = await fetch(`${API_BASE_URL}/api/broker/portfolio/holdings?broker=dhan`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             
@@ -119,8 +122,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log('Filter:', filter, 'From:', fromDate, 'To:', toDate);
             
             let endpoint = filter === 'pending' 
-                ? `http://localhost:3000/api/broker/orders/pending?broker=dhan`
-                : `http://localhost:3000/api/broker/orders/history?broker=dhan`;
+                ? `${API_BASE_URL}/api/broker/orders/pending?broker=dhan`
+                : `${API_BASE_URL}/api/broker/orders/history?broker=dhan`;
             
             // Add date range parameters if provided
             if (fromDate) {
@@ -201,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('📊 Loading positions from Dhan...');
         
         try {
-            const url = `http://localhost:3000/api/broker/portfolio/positions?broker=dhan`;
+            const url = `${API_BASE_URL}/api/broker/portfolio/positions?broker=dhan`;
             console.log('🌐 Fetching from:', url);
             
             const response = await fetch(url, {
@@ -251,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadFunds() {
         try {
             console.log('💰 Loading funds from Dhan...');
-            const response = await fetch(`http://localhost:3000/api/broker/portfolio/funds?broker=dhan`, {
+            const response = await fetch(`${API_BASE_URL}/api/broker/portfolio/funds?broker=dhan`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await response.json();
@@ -295,7 +298,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             console.log('📈 Loading market data from Dhan for symbols:', watchedSymbols);
-            const response = await fetch('http://localhost:3000/api/broker/market/quotes', {
+            const response = await fetch(`${API_BASE_URL}/api/broker/market/quotes`, {
                 method: 'POST',
                 headers: { 
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -464,7 +467,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             runBtn.textContent = 'Running...';
 
             // Run backtest
-            const response = await fetch('http://localhost:3000/api/backtest/run', {
+            const response = await fetch(`${API_BASE_URL}/api/backtest/run`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -657,7 +660,7 @@ function hideTokenExpiryNotification() {
 
 function updateLastTokenUpdateDisplay() {
     // Try to get the last token update from credentials
-    fetch('http://localhost:3000/api/user/broker-credentials', {
+    fetch(`${API_BASE_URL}/api/user/broker-credentials`, {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

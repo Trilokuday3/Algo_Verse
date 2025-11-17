@@ -21,10 +21,21 @@ const cryptoService = require('./services/crypto.service');
 const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 const server = http.createServer(app);
+
+// Determine allowed origins based on environment
+const allowedOrigins = [
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "http://13.201.224.180:5500",
+    "http://13.201.224.180",
+    "*" // Allow all origins for now - tighten this in production
+];
+
 const io = new Server(server, {
     cors: {
-        origin: "http://127.0.0.1:5500",
-        methods: ["GET", "POST", "PUT", "DELETE"]
+        origin: allowedOrigins,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true
     }
 });
 const PORT = 3000;
@@ -33,7 +44,19 @@ const PORT = 3000;
 dockerService.init(io);
 
 // --- Middleware ---
-app.use(cors());
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
 app.use(express.json());
 
 // =================================================================

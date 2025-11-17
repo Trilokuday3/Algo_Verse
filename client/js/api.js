@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:3000';
+// Use the API_BASE_URL from the global configuration
+const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000';
 
 /**
  * Retrieves the JWT token from browser's local storage.

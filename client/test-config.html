@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .status {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success { color: #4ade80; }
+        .error { color: #ef4444; }
+        button {
+            background: #6366f1;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Configuration & Server Test</h1>
+    
+    <div class="status">
+        <h3>Environment Detection:</h3>
+        <p><strong>Hostname:</strong> <span id="hostname"></span></p>
+        <p><strong>Port:</strong> <span id="port"></span></p>
+        <p><strong>Protocol:</strong> <span id="protocol"></span></p>
+        <p><strong>Full URL:</strong> <span id="fullurl"></span></p>
+    </div>
+
+    <div class="status">
+        <h3>Config.js Status:</h3>
+        <p id="config-status"></p>
+    </div>
+
+    <div class="status">
+        <h3>API Configuration:</h3>
+        <p><strong>API Base URL:</strong> <span id="api-url"></span></p>
+        <p><strong>WebSocket URL:</strong> <span id="ws-url"></span></p>
+        <p><strong>Environment:</strong> <span id="env-type"></span></p>
+    </div>
+
+    <div class="status">
+        <h3>Server Connection Test:</h3>
+        <button onclick="testServer()">Test Server Connection</button>
+        <p id="test-result"></p>
+    </div>
+
+    <script src="./js/config.js"></script>
+    <script>
+        // Display environment info
+        document.getElementById('hostname').textContent = window.location.hostname;
+        document.getElementById('port').textContent = window.location.port || '80';
+        document.getElementById('protocol').textContent = window.location.protocol;
+        document.getElementById('fullurl').textContent = window.location.href;
+
+        // Check if config loaded
+        if (window.APP_CONFIG) {
+            document.getElementById('config-status').innerHTML = '<span class="success">✅ Config.js loaded successfully</span>';
+            document.getElementById('api-url').textContent = window.APP_CONFIG.API_BASE_URL;
+            document.getElementById('ws-url').textContent = window.APP_CONFIG.WS_URL;
+            
+            const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            document.getElementById('env-type').textContent = isDev ? 'Development' : 'Production';
+        } else {
+            document.getElementById('config-status').innerHTML = '<span class="error">❌ Config.js NOT loaded!</span>';
+            document.getElementById('api-url').textContent = 'NOT AVAILABLE';
+            document.getElementById('ws-url').textContent = 'NOT AVAILABLE';
+            document.getElementById('env-type').textContent = 'UNKNOWN';
+        }
+
+        async function testServer() {
+            const resultEl = document.getElementById('test-result');
+            resultEl.innerHTML = '⏳ Testing...';
+            
+            try {
+                const apiUrl = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000';
+                const response = await fetch(`${apiUrl}/api/auth/login-or-register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test@test.com', password: 'test' })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultEl.innerHTML = `<span class="success">✅ Server is responding!<br>Status: ${response.status}<br>Token received: ${data.token ? 'Yes' : 'No'}</span>`;
+                } else {
+                    resultEl.innerHTML = `<span class="error">❌ Server responded with error: ${response.status}</span>`;
+                }
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ Connection failed: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
