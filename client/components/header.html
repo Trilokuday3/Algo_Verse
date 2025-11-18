@@ -54,13 +54,13 @@
         color: rgb(209, 213, 219) !important;
     }
     
-    /* Logo gradient colors - changes based on theme */
+    /* Logo - no background circle, just text */
     header.m3-top-app-bar .logo-gradient {
-        background: #7c3aed !important;
+        background: transparent !important;
     }
     
     html.dark header.m3-top-app-bar .logo-gradient {
-        background: #D9C6FF !important;
+        background: transparent !important;
     }
     
     /* Account button gradient colors - changes based on theme */
@@ -72,14 +72,22 @@
         background: #D9C6FF !important;
     }
     
-    /* Alpha symbol and account letter text color - white in light mode */
-    header.m3-top-app-bar .logo-gradient span,
+    /* Alpha symbol - violet color in light mode */
+    header.m3-top-app-bar .logo-gradient span {
+        color: #7c3aed !important;
+    }
+    
+    /* Alpha symbol - lighter violet in dark mode */
+    html.dark header.m3-top-app-bar .logo-gradient span {
+        color: #D9C6FF !important;
+    }
+    
+    /* Account letter text color - white in light mode */
     header.m3-top-app-bar .account-gradient span {
         color: white !important;
     }
     
-    /* Alpha symbol and account letter text color - dark indigo in dark mode */
-    html.dark header.m3-top-app-bar .logo-gradient span,
+    /* Account letter text color - dark indigo in dark mode */
     html.dark header.m3-top-app-bar .account-gradient span {
         color: #3730A3 !important;
     }
