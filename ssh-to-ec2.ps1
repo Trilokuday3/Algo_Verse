@@ -1,6 +1,6 @@
 # Quick SSH connection to EC2 instance
 
-$EC2_IP = "13.201.224.180"
+$EC2_IP = "13.233.57.134"
 $EC2_USER = "ubuntu"
 $KEY_FILE = "$PSScriptRoot\ec2-key.pem"
 

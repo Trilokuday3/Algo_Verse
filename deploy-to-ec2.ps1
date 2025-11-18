@@ -4,7 +4,7 @@
 $ErrorActionPreference = "Stop"
 
 # Configuration
-$EC2_IP = "13.201.224.180"
+$EC2_IP = "13.233.57.134"
 $EC2_USER = "ubuntu"  # Change if using a different AMI (Amazon Linux uses 'ec2-user')
 $KEY_FILE = "$PSScriptRoot\ec2-key.pem"
 $APP_DIR = "/home/ubuntu/algo-runner"  # Adjust if your app is in a different directory

@@ -26,6 +26,8 @@ const server = http.createServer(app);
 const allowedOrigins = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
+    "http://13.233.57.134:5500",
+    "http://13.233.57.134",
     "http://13.201.224.180:5500",
     "http://13.201.224.180",
     "*" // Allow all origins for now - tighten this in production
