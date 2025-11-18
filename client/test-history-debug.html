@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Debug Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+        .log { 
+            background: #2a2a2a;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .success { color: #4ade80; }
+        .error { color: #ef4444; }
+        .info { color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <h1>🔍 History API Debug Test</h1>
+    <div id="logs"></div>
+    
+    <script src="./js/config.js"></script>
+    <script>
+        const logsDiv = document.getElementById('logs');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logsDiv.appendChild(div);
+            console.log(message);
+        }
+        
+        async function testHistory() {
+            log('🚀 Starting history API test...', 'info');
+            
+            // Check config
+            if (window.APP_CONFIG) {
+                log(`✅ Config loaded: ${window.APP_CONFIG.API_BASE_URL}`, 'success');
+            } else {
+                log('❌ Config not loaded!', 'error');
+                return;
+            }
+            
+            // Check token
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('❌ No auth token found in localStorage', 'error');
+                log('Please login first at: login.html', 'error');
+                return;
+            }
+            log(`✅ Token found: ${token.substring(0, 30)}...`, 'success');
+            
+            // Test API
+            try {
+                const url = `${window.APP_CONFIG.API_BASE_URL}/api/strategy/history/all?limit=200`;
+                log(`📡 Fetching from: ${url}`, 'info');
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                log(`📊 Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Error: ${errorText}`, 'error');
+                    
+                    if (response.status === 401) {
+                        log('Token is invalid or expired. Please login again.', 'error');
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                log(`✅ Success! Total runs: ${data.total}`, 'success');
+                log(`📝 Runs returned: ${data.runs?.length || 0}`, 'info');
+                
+                if (data.runs && data.runs.length > 0) {
+                    log('📋 Sample run data:', 'info');
+                    log(JSON.stringify(data.runs[0], null, 2), 'info');
+                } else {
+                    log('ℹ️ No run history found (normal if you haven\'t run strategies yet)', 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Fetch error: ${error.message}`, 'error');
+                log(`Stack: ${error.stack}`, 'error');
+            }
+        }
+        
+        // Run test on load
+        testHistory();
+    </script>
+</body>
+</html>
