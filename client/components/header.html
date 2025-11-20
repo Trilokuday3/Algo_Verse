@@ -54,13 +54,13 @@
         color: rgb(209, 213, 219) !important;
     }
     
-    /* Logo - no background circle, just text */
+    /* Logo gradient colors - changes based on theme */
     header.m3-top-app-bar .logo-gradient {
-        background: transparent !important;
+        background: #7c3aed !important;
     }
     
     html.dark header.m3-top-app-bar .logo-gradient {
-        background: transparent !important;
+        background: #D9C6FF !important;
     }
     
     /* Account button gradient colors - changes based on theme */
@@ -72,22 +72,14 @@
         background: #D9C6FF !important;
     }
     
-    /* Alpha symbol - violet color in light mode */
-    header.m3-top-app-bar .logo-gradient span {
-        color: #7c3aed !important;
-    }
-    
-    /* Alpha symbol - lighter violet in dark mode */
-    html.dark header.m3-top-app-bar .logo-gradient span {
-        color: #D9C6FF !important;
-    }
-    
-    /* Account letter text color - white in light mode */
+    /* Alpha symbol and account letter text color - white in light mode */
+    header.m3-top-app-bar .logo-gradient span,
     header.m3-top-app-bar .account-gradient span {
         color: white !important;
     }
     
-    /* Account letter text color - dark indigo in dark mode */
+    /* Alpha symbol and account letter text color - dark indigo in dark mode */
+    html.dark header.m3-top-app-bar .logo-gradient span,
     html.dark header.m3-top-app-bar .account-gradient span {
         color: #3730A3 !important;
     }
@@ -96,7 +88,9 @@
     <nav class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
         <!-- Logo -->
         <a href="index.html" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <span class="text-2xl font-bold logo-gradient">α</span>
+            <div class="w-10 h-10 rounded-full flex items-center justify-center logo-gradient">
+                <span class="text-2xl font-bold">α</span>
+            </div>
             <span class="m3-title-large font-semibold text-gray-900 dark:text-gray-100">Alpha Z</span>
         </a>
         <!-- Navigation Links -->

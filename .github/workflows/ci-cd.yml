@@ -1,0 +1,145 @@
+name: CI/CD Pipeline - Alpha Z
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run tests every day at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  # Job 1: Unit Tests
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: server/package-lock.json
+        
+    - name: Install dependencies
+      working-directory: ./server
+      run: npm ci
+      
+    - name: Run unit tests
+      working-directory: ./server
+      run: npm test -- --coverage
+      
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./server/coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+
+  # Job 2: Integration Tests (Cloud Deployment)
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Run cloud deployment tests
+      run: node test-cloud-deployment.js
+      
+    - name: Run integration tests
+      run: node test-integration.js
+      continue-on-error: true
+      
+    - name: Run feature tests
+      run: node test-features.js
+      continue-on-error: true
+      
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: integration-test-results
+        path: |
+          test-results/
+          *.log
+
+  # Job 3: Endpoint Health Check
+  health-check:
+    name: Endpoint Health Check
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Run endpoint health check
+      run: node test-endpoint-health.js
+      continue-on-error: true
+
+  # Job 4: Deploy to Production (only on main branch)
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, health-check]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+        
+    - name: Deploy to AWS EC2
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+        EC2_USER: ${{ secrets.EC2_USER }}
+      run: |
+        # Upload server files
+        scp -o StrictHostKeyChecking=no -r server/* $EC2_USER@$EC2_HOST:/home/$EC2_USER/Algo_Verse/server/
+        
+        # Upload client files
+        scp -o StrictHostKeyChecking=no -r client/* $EC2_USER@$EC2_HOST:/home/$EC2_USER/Algo_Verse/client/
+        
+        # Restart server
+        ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/$EC2_USER/Algo_Verse/server && npm install && pm2 restart algo-server"
+        
+    - name: Post-deployment health check
+      run: |
+        sleep 10
+        node test-endpoint-health.js
+
+  # Job 5: Notify on Failure
+  notify:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, health-check, deploy]
+    if: failure()
+    
+    steps:
+    - name: Send notification
+      run: |
+        echo "❌ CI/CD Pipeline failed!"
+        echo "Check the Actions tab for details"
+        # Add Slack/Discord/Email notification here

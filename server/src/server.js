@@ -65,6 +65,29 @@ app.use(express.json());
 // --- API ROUTES ---
 // =================================================================
 
+// --- Health Check Route ---
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
+
+app.get('/api', (req, res) => {
+    res.json({ 
+        message: 'Alpha Z API is running',
+        version: '1.0.0',
+        endpoints: [
+            '/api/auth/login-or-register',
+            '/api/strategies',
+            '/api/credentials',
+            '/api/backtest'
+        ]
+    });
+});
+
 // --- Authentication Route ---
 app.post('/api/auth/login-or-register', async (req, res) => {
     try {

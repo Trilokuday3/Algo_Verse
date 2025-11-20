@@ -19,3 +19,11 @@ junit.xml
 *.swp
 *.swo
 *~
+*test*
+test-dns-flags.ps1
+Algo_Verse.pem
+test-docker-dns-fix.ps1
+test-docker-dns.ps1
+PROJECT_STATUS.md
+QUICKFIX.md
+ec2-key.pem

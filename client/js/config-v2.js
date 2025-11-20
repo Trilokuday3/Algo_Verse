@@ -1,5 +1,5 @@
 /**
- * Environment Configuration
+ * Environment Configuration v2
  * This file manages API endpoints and WebSocket URLs for different environments
  */
 
