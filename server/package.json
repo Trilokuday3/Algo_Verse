@@ -15,12 +15,16 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.12.2",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "cross-env": "^10.1.0",
     "dockerode": "^4.0.8",
     "dotenv": "^17.2.2",
     "express": "^4.19.2",
-    "uuid": "^13.0.0"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.20.0",
+    "uuid": "^13.0.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "jest": "^29.7.0",
