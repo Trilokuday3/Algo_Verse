@@ -408,7 +408,8 @@ Runtime: Node.js
 
 ---
 
-**Tested By:** GitHub Copilot AI Assistant  
+**Tested By:** Alpha Z Team
 **Test Environment:** AWS EC2 (13.233.57.134:3000)  
 **Database:** MongoDB (user_db, strategy_db, credentials_db)  
 **Last Updated:** November 20, 2025
+
